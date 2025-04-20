@@ -7,7 +7,10 @@ import {
 } from "@shared/schema";
 import createMemoryStore from "memorystore";
 import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { hashPassword } from "./auth";
+import { db, pool } from "./db";
+import { eq, desc, and, or } from "drizzle-orm";
 
 // Create memory store for sessions
 const MemoryStore = createMemoryStore(session);
@@ -386,4 +389,346 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage implementation
+export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
+
+  constructor() {
+    const PostgresSessionStore = connectPg(session);
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true
+    });
+  }
+
+  // Initialize demo users with pre-hashed passwords
+  async initializeDemoUsers() {
+    // Check if admin user exists
+    const adminUser = await this.getUserByUsername("admin");
+    if (!adminUser) {
+      await this.createUser({
+        username: "admin",
+        // Pre-hashed version of "admin123"
+        password: "c67fd35b5759b0a835fe4a0d40b7940cfabda9d3fcdc227365b3f5700ce5bdb4b1c500154aef9fe3fc1864d7cbf5fc2454d31c251bc16d7b81ee707e0211e75c.9d39402e87525f37f35c665f376ae410",
+        firstName: "Admin",
+        lastName: "User",
+        role: "admin"
+      });
+    }
+
+    // Check if operator user exists
+    const operatorUser = await this.getUserByUsername("operator");
+    if (!operatorUser) {
+      await this.createUser({
+        username: "operator",
+        // Pre-hashed version of "operator123"
+        password: "ef9fb603e15bed335d0630ce896d9bc7dbe3eecf5f93c384e5a41303cef5c6eac80f8349a80fc1c9726a505e65ab53760d6c137f75bba1e5eee0bb38e946e2b7.22b39bc16c0b03a8e9e845bf9d25f84d",
+        firstName: "John",
+        lastName: "Doe",
+        role: "operator"
+      });
+    }
+  }
+
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return db.select().from(users);
+  }
+
+  // Event methods
+  async createEvent(insertEvent: InsertEvent): Promise<Event> {
+    const now = new Date();
+    
+    // Set default values for required fields if not provided
+    const status = insertEvent.status || "new";
+    const assignedToId = insertEvent.assignedToId !== undefined ? insertEvent.assignedToId : null;
+    const photoUrl = insertEvent.photoUrl || null;
+    
+    const [event] = await db
+      .insert(events)
+      .values({
+        ...insertEvent,
+        status,
+        assignedToId,
+        photoUrl,
+        createdAt: now,
+        updatedAt: now
+      })
+      .returning();
+    
+    return event;
+  }
+
+  async getEvent(id: number): Promise<Event | undefined> {
+    const [event] = await db
+      .select()
+      .from(events)
+      .where(eq(events.id, id));
+    return event;
+  }
+
+  async updateEvent(id: number, eventUpdate: Partial<InsertEvent>): Promise<Event | undefined> {
+    const now = new Date();
+    
+    const [event] = await db
+      .update(events)
+      .set({
+        ...eventUpdate,
+        updatedAt: now
+      })
+      .where(eq(events.id, id))
+      .returning();
+    
+    return event;
+  }
+
+  async deleteEvent(id: number): Promise<boolean> {
+    const result = await db
+      .delete(events)
+      .where(eq(events.id, id))
+      .returning();
+    
+    return result.length > 0;
+  }
+
+  async getAllEvents(): Promise<Event[]> {
+    return db
+      .select()
+      .from(events)
+      .orderBy(desc(events.createdAt));
+  }
+
+  async getEventsByUser(userId: number): Promise<Event[]> {
+    return db
+      .select()
+      .from(events)
+      .where(
+        or(
+          eq(events.createdById, userId),
+          eq(events.assignedToId, userId)
+        )
+      )
+      .orderBy(desc(events.createdAt));
+  }
+
+  async getEventsByStatus(status: string): Promise<Event[]> {
+    return db
+      .select()
+      .from(events)
+      .where(eq(events.status, status as any))
+      .orderBy(desc(events.createdAt));
+  }
+
+  // Defect methods
+  async createDefect(insertDefect: InsertDefect): Promise<Defect> {
+    const now = new Date();
+    
+    // Set default values for required fields if not provided
+    const status = insertDefect.status || "new";
+    const severity = insertDefect.severity || "medium";
+    const assignedToId = insertDefect.assignedToId !== undefined ? insertDefect.assignedToId : null;
+    const photoUrl = insertDefect.photoUrl || null;
+    
+    const [defect] = await db
+      .insert(defects)
+      .values({
+        ...insertDefect,
+        status,
+        severity,
+        assignedToId,
+        photoUrl,
+        createdAt: now,
+        updatedAt: now
+      })
+      .returning();
+    
+    return defect;
+  }
+
+  async getDefect(id: number): Promise<Defect | undefined> {
+    const [defect] = await db
+      .select()
+      .from(defects)
+      .where(eq(defects.id, id));
+    return defect;
+  }
+
+  async updateDefect(id: number, defectUpdate: Partial<InsertDefect>): Promise<Defect | undefined> {
+    const now = new Date();
+    
+    const [defect] = await db
+      .update(defects)
+      .set({
+        ...defectUpdate,
+        updatedAt: now
+      })
+      .where(eq(defects.id, id))
+      .returning();
+    
+    return defect;
+  }
+
+  async deleteDefect(id: number): Promise<boolean> {
+    const result = await db
+      .delete(defects)
+      .where(eq(defects.id, id))
+      .returning();
+    
+    return result.length > 0;
+  }
+
+  async getAllDefects(): Promise<Defect[]> {
+    return db
+      .select()
+      .from(defects)
+      .orderBy(desc(defects.createdAt));
+  }
+
+  async getDefectsByUser(userId: number): Promise<Defect[]> {
+    return db
+      .select()
+      .from(defects)
+      .where(
+        or(
+          eq(defects.createdById, userId),
+          eq(defects.assignedToId, userId)
+        )
+      )
+      .orderBy(desc(defects.createdAt));
+  }
+
+  async getDefectsBySeverity(severity: string): Promise<Defect[]> {
+    return db
+      .select()
+      .from(defects)
+      .where(eq(defects.severity, severity as any))
+      .orderBy(desc(defects.createdAt));
+  }
+
+  // Signal methods
+  async createSignal(insertSignal: InsertSignal): Promise<Signal> {
+    const now = new Date();
+    
+    // Set default values for required fields if not provided
+    const status = insertSignal.status || "normal";
+    
+    const [signal] = await db
+      .insert(signals)
+      .values({
+        ...insertSignal,
+        status,
+        createdAt: now
+      })
+      .returning();
+    
+    return signal;
+  }
+
+  async getSignal(id: number): Promise<Signal | undefined> {
+    const [signal] = await db
+      .select()
+      .from(signals)
+      .where(eq(signals.id, id));
+    return signal;
+  }
+
+  async updateSignal(id: number, signalUpdate: Partial<InsertSignal>): Promise<Signal | undefined> {
+    const [signal] = await db
+      .update(signals)
+      .set(signalUpdate)
+      .where(eq(signals.id, id))
+      .returning();
+    
+    return signal;
+  }
+
+  async getAllSignals(): Promise<Signal[]> {
+    return db
+      .select()
+      .from(signals)
+      .orderBy(desc(signals.createdAt));
+  }
+
+  // Notification methods
+  async createNotification(insertNotification: InsertNotification): Promise<Notification> {
+    const now = new Date();
+    
+    // Set default values for required fields if not provided
+    const isRead = insertNotification.isRead !== undefined ? insertNotification.isRead : false;
+    const relatedId = insertNotification.relatedId !== undefined ? insertNotification.relatedId : null;
+    const relatedType = insertNotification.relatedType !== undefined ? insertNotification.relatedType : null;
+    
+    const [notification] = await db
+      .insert(notifications)
+      .values({
+        ...insertNotification,
+        isRead,
+        relatedId,
+        relatedType,
+        createdAt: now
+      })
+      .returning();
+    
+    return notification;
+  }
+
+  async getNotification(id: number): Promise<Notification | undefined> {
+    const [notification] = await db
+      .select()
+      .from(notifications)
+      .where(eq(notifications.id, id));
+    return notification;
+  }
+
+  async getNotificationsByUser(userId: number): Promise<Notification[]> {
+    return db
+      .select()
+      .from(notifications)
+      .where(eq(notifications.userId, userId))
+      .orderBy(desc(notifications.createdAt));
+  }
+
+  async markNotificationAsRead(id: number): Promise<boolean> {
+    const result = await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.id, id))
+      .returning();
+    
+    return result.length > 0;
+  }
+
+  async markAllNotificationsAsRead(userId: number): Promise<boolean> {
+    const result = await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.userId, userId))
+      .returning();
+    
+    return result.length > 0;
+  }
+}
+
+// Use database storage by default
+export const storage = new DatabaseStorage();

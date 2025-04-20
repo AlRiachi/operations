@@ -1,6 +1,7 @@
 import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { relations } from "drizzle-orm";
 
 // User schema
 export const users = pgTable("users", {
@@ -121,6 +122,48 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
   id: true,
   createdAt: true,
 });
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  eventsCreated: many(events, { relationName: "userEventsCreated" }),
+  eventsAssigned: many(events, { relationName: "userEventsAssigned" }),
+  defectsCreated: many(defects, { relationName: "userDefectsCreated" }),
+  defectsAssigned: many(defects, { relationName: "userDefectsAssigned" }),
+  notifications: many(notifications),
+}));
+
+export const eventsRelations = relations(events, ({ one }) => ({
+  createdBy: one(users, {
+    fields: [events.createdById],
+    references: [users.id],
+    relationName: "userEventsCreated"
+  }),
+  assignedTo: one(users, {
+    fields: [events.assignedToId],
+    references: [users.id],
+    relationName: "userEventsAssigned"
+  }),
+}));
+
+export const defectsRelations = relations(defects, ({ one }) => ({
+  createdBy: one(users, {
+    fields: [defects.createdById],
+    references: [users.id],
+    relationName: "userDefectsCreated"
+  }),
+  assignedTo: one(users, {
+    fields: [defects.assignedToId],
+    references: [users.id],
+    relationName: "userDefectsAssigned"
+  }),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id]
+  }),
+}));
 
 // Types
 export type User = typeof users.$inferSelect;
