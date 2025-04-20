@@ -224,12 +224,16 @@ export class MemStorage implements IStorage {
   
   async getAllEvents(): Promise<Event[]> {
     return Array.from(this.events.values())
+      .filter(event => event.status !== "closed") // Filter out soft-deleted events
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
   
   async getEventsByUser(userId: number): Promise<Event[]> {
     return Array.from(this.events.values())
-      .filter(event => event.createdById === userId || event.assignedToId === userId)
+      .filter(event => 
+        (event.createdById === userId || event.assignedToId === userId) &&
+        event.status !== "closed" // Filter out soft-deleted events
+      )
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
   
@@ -308,18 +312,25 @@ export class MemStorage implements IStorage {
   
   async getAllDefects(): Promise<Defect[]> {
     return Array.from(this.defects.values())
+      .filter(defect => defect.status !== "closed") // Filter out soft-deleted defects
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
   
   async getDefectsByUser(userId: number): Promise<Defect[]> {
     return Array.from(this.defects.values())
-      .filter(defect => defect.createdById === userId || defect.assignedToId === userId)
+      .filter(defect => 
+        (defect.createdById === userId || defect.assignedToId === userId) &&
+        defect.status !== "closed" // Filter out soft-deleted defects
+      )
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
   
   async getDefectsBySeverity(severity: string): Promise<Defect[]> {
     return Array.from(this.defects.values())
-      .filter(defect => defect.severity === severity)
+      .filter(defect => 
+        defect.severity === severity &&
+        defect.status !== "closed" // Filter out soft-deleted defects
+      )
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
   
@@ -364,6 +375,7 @@ export class MemStorage implements IStorage {
   
   async getAllSignals(): Promise<Signal[]> {
     return Array.from(this.signals.values())
+      .filter(signal => signal.status !== "inactive") // Filter out soft-deleted signals
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
   
@@ -730,7 +742,13 @@ export class DatabaseStorage implements IStorage {
     return db
       .select()
       .from(defects)
-      .where(eq(defects.severity, severity as any))
+      .where(
+        and(
+          eq(defects.severity, severity as any),
+          // Filter out deleted defects
+          not(eq(defects.status, "closed"))
+        )
+      )
       .orderBy(desc(defects.createdAt));
   }
 
