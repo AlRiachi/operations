@@ -454,14 +454,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
       
-      // Parse and validate using the insertSignalSchema
-      const signalData = insertSignalSchema.parse({
-        ...req.body,
-        createdById: req.user?.id || null
-      });
+      // Extract only the fields that actually exist in the database
+      const { name, value, unit, status, source } = req.body;
       
-      // Create the signal using the proper schema
-      const signal = await storage.createSignal(signalData);
+      if (!name || !value || !unit || !status || !source) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      
+      // Create the signal with only the fields the database supports
+      const signal = await storage.createSignal({
+        name, value, unit, status, source
+      });
       
       // Broadcast the new signal to all connected clients
       broadcastUpdate('signal_created', signal);
@@ -486,9 +489,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const signalId = parseInt(req.params.id);
       
-      // Validate with insertSignalSchema, but omit required fields since this is a partial update
-      const updateSchema = insertSignalSchema.partial();
-      const signalData = updateSchema.parse(req.body);
+      // Extract only fields that exist in the database
+      const { name, value, unit, status, source } = req.body;
+      const signalData: Partial<{name: string; value: string; unit: string; status: string; source: string}> = {};
+      
+      // Only include fields that were provided
+      if (name !== undefined) signalData.name = name;
+      if (value !== undefined) signalData.value = value;
+      if (unit !== undefined) signalData.unit = unit;
+      if (status !== undefined) signalData.status = status;
+      if (source !== undefined) signalData.source = source;
       
       const existingSignal = await storage.getSignal(signalId);
       

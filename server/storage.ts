@@ -42,9 +42,9 @@ export interface IStorage {
   getDefectsBySeverity(severity: string): Promise<Defect[]>;
   
   // Signal operations
-  createSignal(signal: InsertSignal): Promise<Signal>;
+  createSignal(signal: { name: string; value: string; unit: string; status: string; source: string }): Promise<Signal>;
   getSignal(id: number): Promise<Signal | undefined>;
-  updateSignal(id: number, signal: Partial<InsertSignal>): Promise<Signal | undefined>;
+  updateSignal(id: number, signal: Partial<{ name: string; value: string; unit: string; status: string; source: string }>): Promise<Signal | undefined>;
   softDeleteSignal(id: number): Promise<boolean>; // Changed to soft delete
   getAllSignals(): Promise<Signal[]>;
   
@@ -214,7 +214,7 @@ export class MemStorage implements IStorage {
     // Mark as deleted but keep in storage
     const updatedEvent: Event = {
       ...event,
-      status: "deleted",
+      status: "closed", // Use "closed" instead of "deleted" to match the enum
       updatedAt: new Date()
     };
     
@@ -302,7 +302,7 @@ export class MemStorage implements IStorage {
     // Mark as deleted but keep in storage
     const updatedDefect: Defect = {
       ...defect,
-      status: "deleted",
+      status: "closed", // Use "closed" instead of "deleted" to match the enum
       updatedAt: new Date()
     };
     
@@ -335,17 +335,25 @@ export class MemStorage implements IStorage {
   }
   
   // Signal methods
-  async createSignal(insertSignal: InsertSignal): Promise<Signal> {
+  async createSignal(insertSignal: { name: string; value: string; unit: string; status: string; source: string }): Promise<Signal> {
     const id = this.signalIdCounter++;
     const now = new Date();
     
     // Set default values for required fields if not provided
     const status = insertSignal.status || "normal";
     
+    // Create a minimal signal compatible with what's in the database
     const signal: Signal = {
-      ...insertSignal,
-      status,
       id,
+      name: insertSignal.name,
+      value: insertSignal.value,
+      unit: insertSignal.unit,
+      source: insertSignal.source,
+      status: status as any,
+      description: null,
+      category: "normal",
+      severity: "low",
+      createdById: null,
       createdAt: now
     };
     
@@ -357,16 +365,26 @@ export class MemStorage implements IStorage {
     return this.signals.get(id);
   }
   
-  async updateSignal(id: number, signalUpdate: Partial<InsertSignal>): Promise<Signal | undefined> {
+  async updateSignal(id: number, signalUpdate: Partial<{ name: string; value: string; unit: string; status: string; source: string }>): Promise<Signal | undefined> {
     const signal = this.signals.get(id);
     
     if (!signal) {
       return undefined;
     }
     
+    // Apply updates while maintaining proper types
     const updatedSignal: Signal = {
       ...signal,
-      ...signalUpdate
+      name: signalUpdate.name !== undefined ? signalUpdate.name : signal.name,
+      value: signalUpdate.value !== undefined ? signalUpdate.value : signal.value,
+      unit: signalUpdate.unit !== undefined ? signalUpdate.unit : signal.unit,
+      source: signalUpdate.source !== undefined ? signalUpdate.source : signal.source,
+      status: signalUpdate.status !== undefined ? signalUpdate.status as any : signal.status,
+      description: signal.description,
+      category: signal.category,
+      severity: signal.severity,
+      createdById: signal.createdById,
+      createdAt: signal.createdAt
     };
     
     this.signals.set(id, updatedSignal);
