@@ -267,7 +267,13 @@ export function DefectList() {
               New Defect
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+            <DialogTitle className="text-xl font-semibold">
+              {selectedDefect ? "Edit Defect" : "Create New Defect"}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Fill in the details below to {selectedDefect ? "update the" : "create a new"} defect.
+            </DialogDescription>
             <DefectForm onSuccess={handleDefectSaved} defect={selectedDefect} />
           </DialogContent>
         </Dialog>
@@ -289,7 +295,8 @@ export function DefectList() {
       
       {/* View Details Dialog */}
       <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
-        <DialogContent className="sm:max-w-[700px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+          <DialogTitle className="text-xl font-semibold">Defect Details</DialogTitle>
           {selectedDefect && (
             <DefectDetails 
               defect={selectedDefect} 

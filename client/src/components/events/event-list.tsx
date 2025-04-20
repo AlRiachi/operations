@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { DataTable } from "@/components/ui/data-table";
 import { PageHeader } from "@/components/layout/page-header";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Eye, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -267,7 +267,13 @@ export function EventList() {
               New Event
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+            <DialogTitle className="text-xl font-semibold">
+              {selectedEvent ? "Edit Event" : "Create New Event"}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Fill in the details below to {selectedEvent ? "update the" : "create a new"} event.
+            </DialogDescription>
             <EventForm onSuccess={handleEventSaved} event={selectedEvent} />
           </DialogContent>
         </Dialog>
@@ -289,7 +295,8 @@ export function EventList() {
       
       {/* View Details Dialog */}
       <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
-        <DialogContent className="sm:max-w-[700px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+          <DialogTitle className="text-xl font-semibold">Event Details</DialogTitle>
           {selectedEvent && (
             <EventDetails 
               event={selectedEvent} 
