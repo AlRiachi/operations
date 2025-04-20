@@ -639,7 +639,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Signal methods
-  async createSignal(insertSignal: InsertSignal): Promise<Signal> {
+  async createSignal(insertSignal: { name: string; value: string; unit: string; status: string; source: string }): Promise<Signal> {
     const now = new Date();
     
     // Set default values for required fields if not provided
@@ -648,9 +648,12 @@ export class DatabaseStorage implements IStorage {
     const [signal] = await db
       .insert(signals)
       .values({
-        ...insertSignal,
-        status,
-        createdAt: now
+        name: insertSignal.name,
+        value: insertSignal.value,
+        unit: insertSignal.unit,
+        status: status,
+        source: insertSignal.source,
+        created_at: now
       })
       .returning();
     
@@ -665,7 +668,7 @@ export class DatabaseStorage implements IStorage {
     return signal;
   }
 
-  async updateSignal(id: number, signalUpdate: Partial<InsertSignal>): Promise<Signal | undefined> {
+  async updateSignal(id: number, signalUpdate: Partial<{ name: string; value: string; unit: string; status: string; source: string }>): Promise<Signal | undefined> {
     const [signal] = await db
       .update(signals)
       .set(signalUpdate)
