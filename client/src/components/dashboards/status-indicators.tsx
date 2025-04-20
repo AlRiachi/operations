@@ -73,32 +73,32 @@ export function StatusIndicators() {
   };
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {/* Connection Status */}
       <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium flex items-center">
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-xs sm:text-sm font-medium flex items-center">
             Connection Status
             {connected ? (
-              <Badge variant="outline" className="ml-2 bg-green-100 text-green-800 border-green-300">
+              <Badge variant="outline" className="ml-2 text-xs bg-green-100 text-green-800 border-green-300">
                 Connected
               </Badge>
             ) : (
-              <Badge variant="outline" className="ml-2 bg-red-100 text-red-800 border-red-300">
+              <Badge variant="outline" className="ml-2 text-xs bg-red-100 text-red-800 border-red-300">
                 Disconnected
               </Badge>
             )}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
           <div className="flex items-center">
             {connected ? (
-              <CheckCircle className="h-8 w-8 text-green-500 mr-2" />
+              <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 mr-2" />
             ) : (
-              <AlertCircle className="h-8 w-8 text-red-500 mr-2" />
+              <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-red-500 mr-2" />
             )}
             <div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 {connected 
                   ? "Real-time updates active" 
                   : "Connection lost, retrying..."}
@@ -110,12 +110,12 @@ export function StatusIndicators() {
 
       {/* System Health */}
       <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">System Health</CardTitle>
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-xs sm:text-sm font-medium">System Health</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold mb-2 flex items-center">
-            <Activity className={cn("h-7 w-7 mr-2", getHealthColor(systemHealth))} />
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+          <div className="text-2xl sm:text-3xl font-bold mb-2 flex items-center">
+            <Activity className={cn("h-6 w-6 sm:h-7 sm:w-7 mr-2", getHealthColor(systemHealth))} />
             <span className={getHealthColor(systemHealth)}>{systemHealth}%</span>
           </div>
           <Progress 
@@ -127,18 +127,18 @@ export function StatusIndicators() {
       
       {/* Events Summary */}
       <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Events Summary</CardTitle>
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-xs sm:text-sm font-medium">Events Summary</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
           <div className="flex items-center">
-            <Clock className="h-8 w-8 text-blue-500 mr-2" />
+            <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 mr-2" />
             <div>
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-sm text-muted-foreground">Total:</span>
-                <span className="text-sm font-medium">{totalEvents}</span>
-                <span className="text-sm text-muted-foreground">Critical:</span>
-                <span className="text-sm font-medium text-red-500">{criticalEvents}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">Total:</span>
+                <span className="text-xs sm:text-sm font-medium">{totalEvents}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">Critical:</span>
+                <span className="text-xs sm:text-sm font-medium text-red-500">{criticalEvents}</span>
               </div>
             </div>
           </div>
@@ -147,18 +147,18 @@ export function StatusIndicators() {
       
       {/* Defects Summary */}
       <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Defects Summary</CardTitle>
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-xs sm:text-sm font-medium">Defects Summary</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
           <div className="flex items-center">
-            <Wrench className="h-8 w-8 text-orange-500 mr-2" />
+            <Wrench className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500 mr-2" />
             <div>
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-sm text-muted-foreground">Open:</span>
-                <span className="text-sm font-medium">{openDefects}</span>
-                <span className="text-sm text-muted-foreground">Critical:</span>
-                <span className="text-sm font-medium text-red-500">{criticalDefects}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">Open:</span>
+                <span className="text-xs sm:text-sm font-medium">{openDefects}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">Critical:</span>
+                <span className="text-xs sm:text-sm font-medium text-red-500">{criticalDefects}</span>
               </div>
             </div>
           </div>

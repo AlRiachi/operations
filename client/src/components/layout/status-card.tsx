@@ -30,16 +30,16 @@ export function StatusCard({
 }: StatusCardProps) {
   return (
     <Card>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-gray-500">{title}</h3>
-          <span className="text-xs bg-primary/10 text-primary py-1 px-2 rounded-full">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-500">{title}</h3>
+          <span className="text-xs bg-primary/10 text-primary py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-full">
             {timeFrame}
           </span>
         </div>
         
         <div className="flex items-end">
-          <span className="text-3xl font-semibold">{value}</span>
+          <span className="text-2xl sm:text-3xl font-semibold">{value}</span>
           
           {change && (
             <span className={`ml-2 text-xs font-medium flex items-center ${change.positive ? 'text-secondary' : 'text-destructive'}`}>
@@ -54,12 +54,12 @@ export function StatusCard({
         </div>
         
         {(indicator || linkText) && (
-          <div className="mt-4 flex justify-between items-center text-xs text-gray-500">
-            {indicator && <span>{indicator}</span>}
+          <div className="mt-3 sm:mt-4 flex flex-wrap justify-between items-center text-xs text-gray-500">
+            {indicator && <span className="mb-1 sm:mb-0">{indicator}</span>}
             
             {linkText && linkHref && (
               <Link href={linkHref}>
-                <a className="text-primary hover:underline">{linkText}</a>
+                <span className="text-primary hover:underline cursor-pointer">{linkText}</span>
               </Link>
             )}
           </div>
@@ -103,19 +103,19 @@ export function SystemHealthCard({ percentage, status }: SystemHealthCardProps) 
   
   return (
     <Card>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-gray-500">System Health</h3>
-          <span className={`text-xs ${colors.bg} ${colors.text} py-1 px-2 rounded-full capitalize`}>
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-500">System Health</h3>
+          <span className={`text-xs ${colors.bg} ${colors.text} py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-full capitalize`}>
             {statusText}
           </span>
         </div>
         
         <div className="flex items-end">
-          <span className="text-3xl font-semibold">{percentage}%</span>
+          <span className="text-2xl sm:text-3xl font-semibold">{percentage}%</span>
         </div>
         
-        <div className="mt-4">
+        <div className="mt-3 sm:mt-4">
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
               className={`${colors.barColor} h-2 rounded-full`} 
