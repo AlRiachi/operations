@@ -45,6 +45,7 @@ export interface IStorage {
   createSignal(signal: InsertSignal): Promise<Signal>;
   getSignal(id: number): Promise<Signal | undefined>;
   updateSignal(id: number, signal: Partial<InsertSignal>): Promise<Signal | undefined>;
+  deleteSignal(id: number): Promise<boolean>;
   getAllSignals(): Promise<Signal[]>;
   
   // Notification operations
@@ -330,6 +331,14 @@ export class MemStorage implements IStorage {
   async getAllSignals(): Promise<Signal[]> {
     return Array.from(this.signals.values())
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+  
+  async deleteSignal(id: number): Promise<boolean> {
+    if (!this.signals.has(id)) {
+      return false;
+    }
+    
+    return this.signals.delete(id);
   }
   
   // Notification methods
@@ -680,6 +689,15 @@ export class DatabaseStorage implements IStorage {
       })
       .from(signals)
       .orderBy(desc(signals.createdAt));
+  }
+  
+  async deleteSignal(id: number): Promise<boolean> {
+    const result = await db
+      .delete(signals)
+      .where(eq(signals.id, id))
+      .returning();
+    
+    return result.length > 0;
   }
 
   // Notification methods

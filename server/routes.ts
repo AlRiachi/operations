@@ -427,6 +427,123 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  app.get("/api/signals/:id", async (req, res, next) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const signalId = parseInt(req.params.id);
+      const signal = await storage.getSignal(signalId);
+      
+      if (!signal) {
+        return res.status(404).json({ message: "Signal not found" });
+      }
+      
+      res.json(signal);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  app.post("/api/signals", async (req, res, next) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const signalData = insertSignalSchema.parse(req.body);
+      
+      // Set the creator to the current user
+      const signal = await storage.createSignal({
+        ...signalData,
+        createdById: req.user.id,
+      });
+      
+      // Broadcast the new signal to all connected clients
+      broadcastUpdate('signal_created', signal);
+      
+      res.status(201).json(signal);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      }
+      next(error);
+    }
+  });
+  
+  app.put("/api/signals/:id", async (req, res, next) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const signalId = parseInt(req.params.id);
+      const signalData = insertSignalSchema.partial().parse(req.body);
+      
+      const existingSignal = await storage.getSignal(signalId);
+      
+      if (!existingSignal) {
+        return res.status(404).json({ message: "Signal not found" });
+      }
+      
+      // Only allow users to update their own signals or admins
+      if (existingSignal.createdById !== req.user.id && req.user.role !== "admin") {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      const updatedSignal = await storage.updateSignal(signalId, signalData);
+      
+      // Broadcast the signal update to all connected clients
+      broadcastUpdate('signal_updated', updatedSignal);
+      
+      res.json(updatedSignal);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      }
+      next(error);
+    }
+  });
+  
+  app.delete("/api/signals/:id", async (req, res, next) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const signalId = parseInt(req.params.id);
+      const signal = await storage.getSignal(signalId);
+      
+      if (!signal) {
+        return res.status(404).json({ message: "Signal not found" });
+      }
+      
+      // Only allow users to delete their own signals or admins
+      if (signal.createdById !== req.user.id && req.user.role !== "admin") {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      const success = await storage.deleteSignal(signalId);
+      
+      if (success) {
+        // Broadcast the signal deletion to all connected clients
+        broadcastUpdate('signal_deleted', { id: signalId });
+        res.status(204).send();
+      } else {
+        res.status(500).json({ message: "Failed to delete signal" });
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
+  
   // Notifications
   app.get("/api/notifications", async (req, res, next) => {
     try {
