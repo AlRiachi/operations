@@ -55,7 +55,7 @@ export interface IStorage {
   markAllNotificationsAsRead(userId: number): Promise<boolean>;
   
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any for session store due to type issue
 }
 
 // In-memory storage implementation
@@ -65,7 +65,7 @@ export class MemStorage implements IStorage {
   private defects: Map<number, Defect>;
   private signals: Map<number, Signal>;
   private notifications: Map<number, Notification>;
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any for session store due to type issue
   
   private userIdCounter: number;
   private eventIdCounter: number;
@@ -391,7 +391,7 @@ export class MemStorage implements IStorage {
 
 // Database storage implementation
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.Store;
+  sessionStore: any; // Using any for session store due to type issue
 
   constructor() {
     const PostgresSessionStore = connectPg(session);
