@@ -667,8 +667,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllSignals(): Promise<Signal[]> {
+    // Explicitly select only the existing columns to avoid schema issues
     return db
-      .select()
+      .select({
+        id: signals.id,
+        name: signals.name,
+        value: signals.value,
+        unit: signals.unit,
+        status: signals.status,
+        source: signals.source,
+        createdAt: signals.createdAt
+      })
       .from(signals)
       .orderBy(desc(signals.createdAt));
   }
