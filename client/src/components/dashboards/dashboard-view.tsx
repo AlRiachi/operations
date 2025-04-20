@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Event, Defect } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { EventForm } from "@/components/events/event-form";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -136,7 +136,11 @@ export function DashboardView() {
                 New Event
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
+            <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+              <DialogTitle className="text-xl font-semibold">Create New Event</DialogTitle>
+              <DialogDescription className="text-sm text-muted-foreground">
+                Fill in the details below to create a new event.
+              </DialogDescription>
               <EventForm onSuccess={handleEventCreated} />
             </DialogContent>
           </Dialog>
