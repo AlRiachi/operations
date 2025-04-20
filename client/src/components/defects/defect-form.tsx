@@ -47,7 +47,7 @@ export function DefectForm({ defect, onSuccess }: DefectFormProps) {
   const { toast } = useToast();
   const { user } = useAuth();
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(
-    defect?.photoUrl
+    defect?.photoUrl || undefined
   );
 
   // Fetch users for assignment dropdown
