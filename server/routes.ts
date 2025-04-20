@@ -402,7 +402,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Forbidden" });
       }
       
-      const success = await storage.deleteDefect(defectId);
+      // Changed to soft delete so data is preserved
+      const success = await storage.softDeleteDefect(defectId);
       
       if (success) {
         res.status(204).send();
@@ -536,7 +537,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Remove createdById check as it doesn't exist in the DB yet
       // We'll implement this check later
       
-      const success = await storage.deleteSignal(signalId);
+      // Changed to soft delete so data is preserved
+      const success = await storage.softDeleteSignal(signalId);
       
       if (success) {
         // Broadcast the signal deletion to all connected clients

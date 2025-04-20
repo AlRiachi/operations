@@ -10,7 +10,7 @@ import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { hashPassword } from "./auth";
 import { db, pool } from "./db";
-import { eq, desc, and, or } from "drizzle-orm";
+import { eq, desc, and, or, not } from "drizzle-orm";
 
 // Create memory store for sessions
 const MemoryStore = createMemoryStore(session);
@@ -593,6 +593,10 @@ export class DatabaseStorage implements IStorage {
     return db
       .select()
       .from(events)
+      .where(
+        // Filter out deleted events (status != "closed")
+        not(eq(events.status, "closed"))
+      )
       .orderBy(desc(events.createdAt));
   }
 
@@ -601,9 +605,13 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(events)
       .where(
-        or(
-          eq(events.createdById, userId),
-          eq(events.assignedToId, userId)
+        and(
+          or(
+            eq(events.createdById, userId),
+            eq(events.assignedToId, userId)
+          ),
+          // Filter out deleted events
+          not(eq(events.status, "closed"))
         )
       )
       .orderBy(desc(events.createdAt));
@@ -694,6 +702,10 @@ export class DatabaseStorage implements IStorage {
     return db
       .select()
       .from(defects)
+      .where(
+        // Filter out deleted defects (status != "closed")
+        not(eq(defects.status, "closed"))
+      )
       .orderBy(desc(defects.createdAt));
   }
 
@@ -702,9 +714,13 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(defects)
       .where(
-        or(
-          eq(defects.createdById, userId),
-          eq(defects.assignedToId, userId)
+        and(
+          or(
+            eq(defects.createdById, userId),
+            eq(defects.assignedToId, userId)
+          ),
+          // Filter out deleted defects
+          not(eq(defects.status, "closed"))
         )
       )
       .orderBy(desc(defects.createdAt));
@@ -771,6 +787,10 @@ export class DatabaseStorage implements IStorage {
         createdAt: signals.createdAt
       })
       .from(signals)
+      .where(
+        // Filter out inactive signals
+        not(eq(signals.status, "inactive"))
+      )
       .orderBy(desc(signals.createdAt));
   }
   
