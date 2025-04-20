@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { setupUploadRoutes } from "./upload";
@@ -11,7 +12,56 @@ import {
   insertNotificationSchema
 } from "@shared/schema";
 
+// WebSocket connections store
+const clients = new Set<WebSocket>();
+
+// Helper function to broadcast messages to all connected clients
+function broadcastUpdate(type: string, data: any) {
+  const message = JSON.stringify({ type, data });
+  clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+  });
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Create HTTP server
+  const httpServer = createServer(app);
+  
+  // Create WebSocket server
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // WebSocket connection handler
+  wss.on('connection', (ws) => {
+    console.log('WebSocket client connected');
+    clients.add(ws);
+    
+    // Send initial data on connection
+    const sendInitialData = async () => {
+      try {
+        const events = await storage.getAllEvents();
+        const defects = await storage.getAllDefects();
+        const signals = await storage.getAllSignals();
+        
+        ws.send(JSON.stringify({ 
+          type: 'initial_data', 
+          data: { events, defects, signals } 
+        }));
+      } catch (error) {
+        console.error('Error sending initial data:', error);
+      }
+    };
+    
+    sendInitialData();
+    
+    // Handle connection close
+    ws.on('close', () => {
+      console.log('WebSocket client disconnected');
+      clients.delete(ws);
+    });
+  });
+  
   // Authentication routes
   setupAuth(app);
   
@@ -105,6 +155,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           relatedType: "event"
         });
       }
+      
+      // Broadcast event creation to connected clients
+      broadcastUpdate('event_created', event);
       
       res.status(201).json(event);
     } catch (error) {
@@ -430,6 +483,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  const httpServer = createServer(app);
+  // Return the HTTP server with WebSocket support
   return httpServer;
 }
