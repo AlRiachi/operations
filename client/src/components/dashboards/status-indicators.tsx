@@ -167,20 +167,20 @@ export function StatusIndicators() {
       
       {/* Forced Signals Indicators */}
       <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Forced Signals</CardTitle>
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-xs sm:text-sm font-medium">Forced Signals</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
           <div className="flex items-center">
-            <AlertTriangle className="h-8 w-8 text-orange-500 mr-2" />
+            <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500 mr-2" />
             <div>
               <div className="grid grid-cols-2 gap-1">
-                <span className="text-sm text-muted-foreground">Total:</span>
-                <span className="text-sm font-medium">{forcedSignals.length}</span>
-                <span className="text-sm text-muted-foreground">Active:</span>
-                <span className="text-sm font-medium text-orange-500">{activeForcedSignals.length}</span>
-                <span className="text-sm text-muted-foreground">Critical:</span>
-                <span className="text-sm font-medium text-red-500">{criticalForcedSignals.length}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">Total:</span>
+                <span className="text-xs sm:text-sm font-medium">{forcedSignals.length}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">Active:</span>
+                <span className="text-xs sm:text-sm font-medium text-orange-500">{activeForcedSignals.length}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">Critical:</span>
+                <span className="text-xs sm:text-sm font-medium text-red-500">{criticalForcedSignals.length}</span>
               </div>
             </div>
           </div>
@@ -188,18 +188,18 @@ export function StatusIndicators() {
       </Card>
       
       <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Forced Signal Status</CardTitle>
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-xs sm:text-sm font-medium">Forced Signal Status</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
           <div className="flex items-center">
-            <Activity className="h-8 w-8 text-blue-500 mr-2" />
+            <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 mr-2" />
             <div>
               {forcedSignals.length === 0 ? (
-                <div className="text-sm text-muted-foreground">No forced signals active</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">No forced signals active</div>
               ) : (
                 <>
-                  <div className="text-lg font-medium">
+                  <div className="text-sm sm:text-lg font-medium">
                     {criticalForcedSignals.length > 0 ? (
                       <span className="text-red-500">Critical signals detected</span>
                     ) : activeForcedSignals.length > 0 ? (
@@ -208,7 +208,7 @@ export function StatusIndicators() {
                       <span className="text-green-500">All signals normal</span>
                     )}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-xs sm:text-sm text-muted-foreground">
                     {forcedSignals.length} signals being monitored
                   </div>
                 </>
@@ -219,18 +219,18 @@ export function StatusIndicators() {
       </Card>
       
       <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Forced Signal Info</CardTitle>
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-xs sm:text-sm font-medium">Forced Signal Info</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
           <div className="flex items-center h-full">
-            <Wrench className="h-8 w-8 text-blue-500 mr-2" />
+            <Wrench className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 mr-2" />
             <div>
-              <p className="text-sm">
+              <p className="text-xs sm:text-sm">
                 Forced signals are used to override normal process controls or sensor readings to prevent downtime due to small sensor issues or for testing purposes.
               </p>
               <div className="mt-2">
-                <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300">
+                <Badge variant="outline" className="text-xs bg-orange-100 text-orange-800 border-orange-300">
                   Active monitoring
                 </Badge>
               </div>
@@ -240,15 +240,15 @@ export function StatusIndicators() {
       </Card>
       
       <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Security Status</CardTitle>
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-xs sm:text-sm font-medium">Security Status</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
           <div className="flex items-center">
-            <ShieldAlert className="h-8 w-8 text-green-500 mr-2" />
+            <ShieldAlert className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 mr-2" />
             <div>
-              <div className="text-lg font-medium">Normal</div>
-              <div className="text-sm text-muted-foreground">All systems secure</div>
+              <div className="text-sm sm:text-lg font-medium">Normal</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">All systems secure</div>
             </div>
           </div>
         </CardContent>

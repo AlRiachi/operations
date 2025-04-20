@@ -42,9 +42,9 @@ export interface IStorage {
   getDefectsBySeverity(severity: string): Promise<Defect[]>;
   
   // Signal operations
-  createSignal(signal: { name: string; value: string; unit: string; status: string; source: string }): Promise<Signal>;
+  createSignal(signal: InsertSignal): Promise<Signal>;
   getSignal(id: number): Promise<Signal | undefined>;
-  updateSignal(id: number, signal: Partial<{ name: string; value: string; unit: string; status: string; source: string }>): Promise<Signal | undefined>;
+  updateSignal(id: number, signal: Partial<InsertSignal>): Promise<Signal | undefined>;
   softDeleteSignal(id: number): Promise<boolean>; // Changed to soft delete
   getAllSignals(): Promise<Signal[]>;
   
