@@ -25,10 +25,10 @@ export function StatusIndicators() {
   const criticalDefects = data.defects.filter(d => d.severity === "critical").length;
   const totalDefects = data.defects.length;
   
-  // Get latest signals for various systems
-  const temperatureSignal = data.signals.find(s => s.name === "temperature");
-  const pressureSignal = data.signals.find(s => s.name === "pressure");
-  const powerOutputSignal = data.signals.find(s => s.name === "power_output");
+  // Get latest forced signals
+  const forcedSignals = data.signals.filter(s => s.category === "forced");
+  const activeForcedSignals = forcedSignals.filter(s => s.status === "active");
+  const criticalForcedSignals = forcedSignals.filter(s => s.severity === "critical");
   
   // Calculate system health percentage based on events and defects
   const calculateSystemHealth = () => {
@@ -164,34 +164,53 @@ export function StatusIndicators() {
         </CardContent>
       </Card>
       
-      {/* Signal Indicators */}
+      {/* Forced Signals Indicators */}
       <Card className="shadow-md">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Temperature</CardTitle>
+          <CardTitle className="text-sm font-medium">Forced Signals</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center">
-            <Thermometer className="h-8 w-8 text-orange-500 mr-2" />
+            <AlertTriangle className="h-8 w-8 text-orange-500 mr-2" />
             <div>
-              <div className="text-2xl font-bold">
-                {temperatureSignal ? (
-                  <>
-                    {temperatureSignal.value}
-                    <span className="text-sm text-muted-foreground ml-1">°C</span>
-                  </>
-                ) : (
-                  <span className="text-sm text-muted-foreground">No data</span>
-                )}
+              <div className="grid grid-cols-2 gap-1">
+                <span className="text-sm text-muted-foreground">Total:</span>
+                <span className="text-sm font-medium">{forcedSignals.length}</span>
+                <span className="text-sm text-muted-foreground">Active:</span>
+                <span className="text-sm font-medium text-orange-500">{activeForcedSignals.length}</span>
+                <span className="text-sm text-muted-foreground">Critical:</span>
+                <span className="text-sm font-medium text-red-500">{criticalForcedSignals.length}</span>
               </div>
-              {temperatureSignal && temperatureSignal.status === "warning" && (
-                <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">
-                  Warning
-                </Badge>
-              )}
-              {temperatureSignal && temperatureSignal.status === "critical" && (
-                <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300">
-                  Critical
-                </Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="shadow-md">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Forced Signal Status</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center">
+            <Activity className="h-8 w-8 text-blue-500 mr-2" />
+            <div>
+              {forcedSignals.length === 0 ? (
+                <div className="text-sm text-muted-foreground">No forced signals active</div>
+              ) : (
+                <>
+                  <div className="text-lg font-medium">
+                    {criticalForcedSignals.length > 0 ? (
+                      <span className="text-red-500">Critical signals detected</span>
+                    ) : activeForcedSignals.length > 0 ? (
+                      <span className="text-orange-500">Active forced signals</span>
+                    ) : (
+                      <span className="text-green-500">All signals normal</span>
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {forcedSignals.length} signals being monitored
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -200,65 +219,20 @@ export function StatusIndicators() {
       
       <Card className="shadow-md">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Pressure</CardTitle>
+          <CardTitle className="text-sm font-medium">Forced Signal Info</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center">
-            <Gauge className="h-8 w-8 text-blue-500 mr-2" />
+          <div className="flex items-center h-full">
+            <Wrench className="h-8 w-8 text-blue-500 mr-2" />
             <div>
-              <div className="text-2xl font-bold">
-                {pressureSignal ? (
-                  <>
-                    {pressureSignal.value}
-                    <span className="text-sm text-muted-foreground ml-1">bar</span>
-                  </>
-                ) : (
-                  <span className="text-sm text-muted-foreground">No data</span>
-                )}
+              <p className="text-sm">
+                Forced signals are used to override normal process controls or sensor readings to prevent downtime due to small sensor issues or for testing purposes.
+              </p>
+              <div className="mt-2">
+                <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300">
+                  Active monitoring
+                </Badge>
               </div>
-              {pressureSignal && pressureSignal.status === "warning" && (
-                <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">
-                  Warning
-                </Badge>
-              )}
-              {pressureSignal && pressureSignal.status === "critical" && (
-                <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300">
-                  Critical
-                </Badge>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      
-      <Card className="shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Power Output</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center">
-            <Activity className="h-8 w-8 text-green-500 mr-2" />
-            <div>
-              <div className="text-2xl font-bold">
-                {powerOutputSignal ? (
-                  <>
-                    {powerOutputSignal.value}
-                    <span className="text-sm text-muted-foreground ml-1">MW</span>
-                  </>
-                ) : (
-                  <span className="text-sm text-muted-foreground">No data</span>
-                )}
-              </div>
-              {powerOutputSignal && powerOutputSignal.status === "warning" && (
-                <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">
-                  Warning
-                </Badge>
-              )}
-              {powerOutputSignal && powerOutputSignal.status === "critical" && (
-                <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300">
-                  Critical
-                </Badge>
-              )}
             </div>
           </div>
         </CardContent>
