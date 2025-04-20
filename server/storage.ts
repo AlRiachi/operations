@@ -27,7 +27,7 @@ export interface IStorage {
   createEvent(event: InsertEvent): Promise<Event>;
   getEvent(id: number): Promise<Event | undefined>;
   updateEvent(id: number, event: Partial<InsertEvent>): Promise<Event | undefined>;
-  deleteEvent(id: number): Promise<boolean>;
+  softDeleteEvent(id: number): Promise<boolean>; // Changed to soft delete
   getAllEvents(): Promise<Event[]>;
   getEventsByUser(userId: number): Promise<Event[]>;
   getEventsByStatus(status: string): Promise<Event[]>;
@@ -36,16 +36,16 @@ export interface IStorage {
   createDefect(defect: InsertDefect): Promise<Defect>;
   getDefect(id: number): Promise<Defect | undefined>;
   updateDefect(id: number, defect: Partial<InsertDefect>): Promise<Defect | undefined>;
-  deleteDefect(id: number): Promise<boolean>;
+  softDeleteDefect(id: number): Promise<boolean>; // Changed to soft delete
   getAllDefects(): Promise<Defect[]>;
   getDefectsByUser(userId: number): Promise<Defect[]>;
   getDefectsBySeverity(severity: string): Promise<Defect[]>;
   
   // Signal operations
-  createSignal(signal: InsertSignal): Promise<Signal>;
+  createSignal(signal: { name: string; value: string; unit: string; status: string; source: string }): Promise<Signal>;
   getSignal(id: number): Promise<Signal | undefined>;
-  updateSignal(id: number, signal: Partial<InsertSignal>): Promise<Signal | undefined>;
-  deleteSignal(id: number): Promise<boolean>;
+  updateSignal(id: number, signal: Partial<{ name: string; value: string; unit: string; status: string; source: string }>): Promise<Signal | undefined>;
+  softDeleteSignal(id: number): Promise<boolean>; // Changed to soft delete
   getAllSignals(): Promise<Signal[]>;
   
   // Notification operations
@@ -205,6 +205,23 @@ export class MemStorage implements IStorage {
     return this.events.delete(id);
   }
   
+  async softDeleteEvent(id: number): Promise<boolean> {
+    const event = this.events.get(id);
+    if (!event) {
+      return false;
+    }
+    
+    // Mark as deleted but keep in storage
+    const updatedEvent: Event = {
+      ...event,
+      status: "deleted",
+      updatedAt: new Date()
+    };
+    
+    this.events.set(id, updatedEvent);
+    return true;
+  }
+  
   async getAllEvents(): Promise<Event[]> {
     return Array.from(this.events.values())
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
@@ -270,6 +287,23 @@ export class MemStorage implements IStorage {
   
   async deleteDefect(id: number): Promise<boolean> {
     return this.defects.delete(id);
+  }
+  
+  async softDeleteDefect(id: number): Promise<boolean> {
+    const defect = this.defects.get(id);
+    if (!defect) {
+      return false;
+    }
+    
+    // Mark as deleted but keep in storage
+    const updatedDefect: Defect = {
+      ...defect,
+      status: "deleted",
+      updatedAt: new Date()
+    };
+    
+    this.defects.set(id, updatedDefect);
+    return true;
   }
   
   async getAllDefects(): Promise<Defect[]> {
@@ -339,6 +373,22 @@ export class MemStorage implements IStorage {
     }
     
     return this.signals.delete(id);
+  }
+  
+  async softDeleteSignal(id: number): Promise<boolean> {
+    const signal = this.signals.get(id);
+    if (!signal) {
+      return false;
+    }
+    
+    // Mark as deleted by changing status but keep in storage
+    const updatedSignal: Signal = {
+      ...signal,
+      status: "inactive" // Use inactive as deleted status for signals
+    };
+    
+    this.signals.set(id, updatedSignal);
+    return true;
   }
   
   // Notification methods
@@ -523,6 +573,21 @@ export class DatabaseStorage implements IStorage {
     
     return result.length > 0;
   }
+  
+  async softDeleteEvent(id: number): Promise<boolean> {
+    const now = new Date();
+    
+    const [event] = await db
+      .update(events)
+      .set({
+        status: "closed", // Use "closed" instead of "deleted" to match enum
+        updatedAt: now
+      })
+      .where(eq(events.id, id))
+      .returning();
+    
+    return !!event;
+  }
 
   async getAllEvents(): Promise<Event[]> {
     return db
@@ -608,6 +673,21 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return result.length > 0;
+  }
+  
+  async softDeleteDefect(id: number): Promise<boolean> {
+    const now = new Date();
+    
+    const [defect] = await db
+      .update(defects)
+      .set({
+        status: "closed", // Use "closed" instead of "deleted" to match enum
+        updatedAt: now
+      })
+      .where(eq(defects.id, id))
+      .returning();
+    
+    return !!defect;
   }
 
   async getAllDefects(): Promise<Defect[]> {
@@ -701,6 +781,19 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return result.length > 0;
+  }
+  
+  async softDeleteSignal(id: number): Promise<boolean> {
+    // Set status to "inactive" instead of deleting
+    const [signal] = await db
+      .update(signals)
+      .set({
+        status: "inactive" // Use inactive instead of deleted for signals
+      })
+      .where(eq(signals.id, id))
+      .returning();
+    
+    return !!signal;
   }
 
   // Notification methods

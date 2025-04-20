@@ -236,7 +236,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Forbidden" });
       }
       
-      const success = await storage.deleteEvent(eventId);
+      // Changed to soft delete so data is preserved
+      const success = await storage.softDeleteEvent(eventId);
       
       if (success) {
         res.status(204).send();
