@@ -19,6 +19,7 @@ export function DashboardView() {
   const { user } = useAuth();
   const [timeRange, setTimeRange] = useState("last_24h");
   const [eventFormOpen, setEventFormOpen] = useState(false);
+  const [signalFormOpen, setSignalFormOpen] = useState(false);
   
   // Fetch events
   const { data: events = [] } = useQuery<Event[]>({
@@ -118,6 +119,13 @@ export function DashboardView() {
     queryClient.invalidateQueries({ queryKey: ["/api/events"] });
   };
   
+  // Handler for signal creation
+  const handleSignalCreated = () => {
+    setSignalFormOpen(false);
+    // Invalidate signals query to refresh the list
+    queryClient.invalidateQueries({ queryKey: ["/api/signals"] });
+  };
+  
   return (
     <div className="space-y-6">
       <PageHeader 
@@ -143,6 +151,22 @@ export function DashboardView() {
                 Fill in the details below to create a new event.
               </DialogDescription>
               <EventForm onSuccess={handleEventCreated} />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={signalFormOpen} onOpenChange={setSignalFormOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center" variant="outline">
+                <AlertTriangle className="h-4 w-4 mr-2 text-amber-500" />
+                Record Forced Signal
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+              <DialogTitle className="text-xl font-semibold">Record Forced Signal</DialogTitle>
+              <DialogDescription className="text-sm text-muted-foreground">
+                Use this form to record a forced signal that overrides normal process controls.
+              </DialogDescription>
+              <SignalForm onSuccess={handleSignalCreated} />
             </DialogContent>
           </Dialog>
         </div>
