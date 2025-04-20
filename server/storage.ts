@@ -7,6 +7,7 @@ import {
 } from "@shared/schema";
 import createMemoryStore from "memorystore";
 import session from "express-session";
+import { hashPassword } from "./auth";
 
 // Create memory store for sessions
 const MemoryStore = createMemoryStore(session);
@@ -86,23 +87,38 @@ export class MemStorage implements IStorage {
       checkPeriod: 86400000 // 24 hours
     });
     
-    // Create admin user
-    this.createUser({
+    // Initialize demo users with hardcoded hashed passwords
+    // These passwords are pre-hashed versions of "admin123" and "operator123"
+    this.initializeDemoUsers();
+  }
+  
+  // Initialize demo users with pre-hashed passwords
+  private initializeDemoUsers() {
+    // Admin user with pre-hashed password for "admin123"
+    const adminId = this.userIdCounter++;
+    const adminUser: User = { 
+      id: adminId,
       username: "admin",
-      password: "admin123", // This will be hashed in auth.ts
+      password: "c67fd35b5759b0a835fe4a0d40b7940cfabda9d3fcdc227365b3f5700ce5bdb4b1c500154aef9fe3fc1864d7cbf5fc2454d31c251bc16d7b81ee707e0211e75c.9d39402e87525f37f35c665f376ae410",
       firstName: "Admin",
       lastName: "User",
-      role: "admin"
-    });
+      role: "admin",
+      createdAt: new Date()
+    };
+    this.users.set(adminId, adminUser);
     
-    // Create test operator user
-    this.createUser({
+    // Operator user with pre-hashed password for "operator123"
+    const operatorId = this.userIdCounter++;
+    const operatorUser: User = { 
+      id: operatorId,
       username: "operator",
-      password: "operator123", // This will be hashed in auth.ts
+      password: "ef9fb603e15bed335d0630ce896d9bc7dbe3eecf5f93c384e5a41303cef5c6eac80f8349a80fc1c9726a505e65ab53760d6c137f75bba1e5eee0bb38e946e2b7.22b39bc16c0b03a8e9e845bf9d25f84d",
       firstName: "John",
       lastName: "Doe",
-      role: "operator"
-    });
+      role: "operator",
+      createdAt: new Date()
+    };
+    this.users.set(operatorId, operatorUser);
   }
 
   // User methods
@@ -119,8 +135,13 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userIdCounter++;
     const now = new Date();
+    
+    // Ensure role is defined, default to 'operator' if not provided
+    const role = insertUser.role || 'operator';
+    
     const user: User = { 
       ...insertUser, 
+      role,
       id,
       createdAt: now
     };
@@ -137,11 +158,16 @@ export class MemStorage implements IStorage {
     const id = this.eventIdCounter++;
     const now = new Date();
     
+    // Set default values for required fields if not provided
+    const status = insertEvent.status || "new";
+    
     const event: Event = {
       ...insertEvent,
+      status,
       id,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
+      photoUrl: insertEvent.photoUrl || null
     };
     
     this.events.set(id, event);
