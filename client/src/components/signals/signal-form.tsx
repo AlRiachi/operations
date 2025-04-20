@@ -69,12 +69,14 @@ export function SignalForm({ signal, onSuccess }: SignalFormProps) {
   // Create mutation
   const createMutation = useMutation({
     mutationFn: async (data: SignalFormValues) => {
-      // For forced signals, encode the information in the name and source fields
-      // until we migrate the database schema
+      // For forced signals, encode the information and add required fields
       const signalData = {
         ...data,
         name: data.name.startsWith("forced_") ? data.name : `forced_${data.name}`,
         source: data.source.includes("forced") ? data.source : `forced_${data.source}`,
+        category: "forced", // Required field 
+        severity: "medium", // Required field
+        description: "Force-applied signal"
       };
       
       const res = await apiRequest("POST", "/api/signals", signalData);
@@ -102,12 +104,14 @@ export function SignalForm({ signal, onSuccess }: SignalFormProps) {
     mutationFn: async (data: SignalFormValues) => {
       if (!signal) return;
       
-      // For forced signals, encode the information in the name and source fields
-      // until we migrate the database schema
+      // For forced signals, encode the information and add required fields
       const signalData = {
         ...data,
         name: data.name.startsWith("forced_") ? data.name : `forced_${data.name}`,
         source: data.source.includes("forced") ? data.source : `forced_${data.source}`,
+        category: "forced", // Required field
+        severity: "medium", // Required field
+        description: "Force-applied signal"
       };
       
       const res = await apiRequest("PUT", `/api/signals/${signal.id}`, signalData);
