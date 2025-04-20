@@ -296,10 +296,10 @@ export function DefectForm({ defect, onSuccess }: DefectFormProps) {
                 <Select
                   disabled={isSubmitting}
                   onValueChange={(value) =>
-                    field.onChange(value ? parseInt(value) : null)
+                    value === "unassigned" ? field.onChange(null) : field.onChange(parseInt(value))
                   }
                   defaultValue={
-                    field.value ? field.value.toString() : undefined
+                    field.value ? field.value.toString() : "unassigned"
                   }
                 >
                   <FormControl>
@@ -308,7 +308,7 @@ export function DefectForm({ defect, onSuccess }: DefectFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="">Unassigned</SelectItem>
+                    <SelectItem value="unassigned">Unassigned</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id.toString()}>
                         {user.firstName} {user.lastName}

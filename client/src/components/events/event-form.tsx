@@ -47,7 +47,7 @@ export function EventForm({ event, onSuccess }: EventFormProps) {
   const { toast } = useToast();
   const { user } = useAuth();
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(
-    event?.photoUrl
+    event?.photoUrl || undefined
   );
 
   // Fetch users for assignment dropdown
@@ -294,10 +294,10 @@ export function EventForm({ event, onSuccess }: EventFormProps) {
                 <Select
                   disabled={isSubmitting}
                   onValueChange={(value) =>
-                    field.onChange(value ? parseInt(value) : null)
+                    value === "unassigned" ? field.onChange(null) : field.onChange(parseInt(value))
                   }
                   defaultValue={
-                    field.value ? field.value.toString() : undefined
+                    field.value ? field.value.toString() : "unassigned"
                   }
                 >
                   <FormControl>
@@ -306,7 +306,7 @@ export function EventForm({ event, onSuccess }: EventFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="">Unassigned</SelectItem>
+                    <SelectItem value="unassigned">Unassigned</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id.toString()}>
                         {user.firstName} {user.lastName}
