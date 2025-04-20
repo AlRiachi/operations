@@ -5,7 +5,7 @@ import {
   AlertCircle, 
   CheckCircle, 
   Clock, 
-  Tool, 
+  Wrench, 
   ShieldAlert,
   Activity,
   Gauge,
@@ -119,8 +119,7 @@ export function StatusIndicators() {
           </div>
           <Progress 
             value={systemHealth} 
-            className="h-2"
-            indicatorClassName={getProgressColor(systemHealth)}
+            className={`h-2 ${getProgressColor(systemHealth)}`}
           />
         </CardContent>
       </Card>
@@ -152,7 +151,7 @@ export function StatusIndicators() {
         </CardHeader>
         <CardContent>
           <div className="flex items-center">
-            <Tool className="h-8 w-8 text-orange-500 mr-2" />
+            <Wrench className="h-8 w-8 text-orange-500 mr-2" />
             <div>
               <div className="grid grid-cols-2 gap-1">
                 <span className="text-sm text-muted-foreground">Open:</span>

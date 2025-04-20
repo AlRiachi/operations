@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader, TimeRangeSelector } from "@/components/layout/page-header";
 import { StatusCard, SystemHealthCard } from "@/components/layout/status-card";
+import { StatusIndicators } from "@/components/dashboards/status-indicators";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -11,6 +12,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { EventForm } from "@/components/events/event-form";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
+import { useRealTime } from "@/hooks/use-real-time";
 
 export function DashboardView() {
   const { user } = useAuth();
@@ -140,6 +142,9 @@ export function DashboardView() {
           </Dialog>
         </div>
       </PageHeader>
+      
+      {/* Real-time Status Indicators */}
+      <StatusIndicators />
       
       {/* Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
