@@ -98,12 +98,22 @@ export function RealTimeProvider({ children }: { children: ReactNode }) {
             ...prevData,
             defects: prevData.defects.filter(defect => defect.id !== update.data.id)
           }));
-        } else if (update.type === "signal_created" || update.type === "signal_updated") {
+        } else if (update.type === "signal_created") {
           setData(prevData => ({
             ...prevData,
-            signals: [...prevData.signals.filter(signal => 
-              signal.id !== update.data.id
-            ), update.data]
+            signals: [...prevData.signals, update.data]
+          }));
+        } else if (update.type === "signal_updated") {
+          setData(prevData => ({
+            ...prevData,
+            signals: prevData.signals.map(signal => 
+              signal.id === update.data.id ? update.data : signal
+            )
+          }));
+        } else if (update.type === "signal_deleted") {
+          setData(prevData => ({
+            ...prevData,
+            signals: prevData.signals.filter(signal => signal.id !== update.data.id)
           }));
         }
       } catch (error) {
