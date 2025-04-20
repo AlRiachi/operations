@@ -318,6 +318,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // Broadcast defect creation to all connected clients
+      broadcastUpdate('defect_created', defect);
+      
       res.status(201).json(defect);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -364,6 +367,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           relatedType: "defect"
         });
       }
+      
+      // Broadcast defect update to all connected clients
+      broadcastUpdate('defect_updated', updatedDefect);
       
       res.json(updatedDefect);
     } catch (error) {

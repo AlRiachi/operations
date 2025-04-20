@@ -25,10 +25,11 @@ export function StatusIndicators() {
   const criticalDefects = data.defects.filter(d => d.severity === "critical").length;
   const totalDefects = data.defects.length;
   
-  // Get latest forced signals
-  const forcedSignals = data.signals.filter(s => s.category === "forced");
-  const activeForcedSignals = forcedSignals.filter(s => s.status === "active");
-  const criticalForcedSignals = forcedSignals.filter(s => s.severity === "critical");
+  // Get latest signals for forced signals
+  // Using existing fields until migration is complete
+  const forcedSignals = data.signals.filter(s => s.name.includes("forced") || s.source.includes("forced"));
+  const activeForcedSignals = forcedSignals.filter(s => s.status === "warning" || s.status === "critical");
+  const criticalForcedSignals = forcedSignals.filter(s => s.status === "critical");
   
   // Calculate system health percentage based on events and defects
   const calculateSystemHealth = () => {
