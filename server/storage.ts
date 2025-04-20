@@ -435,10 +435,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.username, username));
+    // Make username case-insensitive
+    const lowercaseUsername = username.toLowerCase();
+    const allUsers = await db.select().from(users);
+    
+    // Find the user with case-insensitive matching
+    const user = allUsers.find(
+      (u) => u.username.toLowerCase() === lowercaseUsername
+    );
+    
     return user;
   }
 
