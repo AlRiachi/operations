@@ -93,7 +93,7 @@ export function Sidebar() {
   };
   
   const sidebarClasses = `
-    fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-20 transition-transform duration-300 transform
+    fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-40 transition-transform duration-300 transform
     ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
   `;
   
@@ -101,7 +101,7 @@ export function Sidebar() {
     <>
       {/* Mobile menu toggle button */}
       <button
-        className="md:hidden fixed z-30 top-4 left-4 p-2 rounded-md bg-white shadow-md"
+        className="md:hidden fixed z-50 top-4 left-4 p-2 rounded-md bg-white shadow-md"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         aria-label="Toggle menu"
       >
@@ -115,7 +115,7 @@ export function Sidebar() {
       {/* Backdrop for mobile */}
       {isMobileMenuOpen && (
         <div 
-          className="md:hidden fixed inset-0 bg-black/50 z-10"
+          className="md:hidden fixed inset-0 bg-black/50 z-30"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -156,7 +156,7 @@ export function Sidebar() {
                 {navItems.map((item) => (
                   <li key={item.href}>
                     <Link href={item.href}>
-                      <a className={`flex items-center px-3 py-2 text-sm rounded-md 
+                      <div className={`flex items-center px-3 py-2 text-sm rounded-md cursor-pointer
                         ${item.active 
                           ? "bg-primary text-white" 
                           : "hover:bg-neutral-200 text-textColor"
@@ -164,7 +164,7 @@ export function Sidebar() {
                       >
                         <span className="mr-3">{item.icon}</span>
                         <span>{item.title}</span>
-                      </a>
+                      </div>
                     </Link>
                   </li>
                 ))}

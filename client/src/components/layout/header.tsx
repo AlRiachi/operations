@@ -99,15 +99,15 @@ export function Header({ onSearch }: { onSearch?: (term: string) => void }) {
   
   return (
     <header className="bg-white shadow-sm z-10 sticky top-0">
-      <div className="flex items-center justify-between h-16 px-6 md:ml-64">
+      <div className="flex items-center justify-between h-16 px-4 md:px-6 md:ml-64">
         {/* Search */}
-        <div className="flex-1 mx-4 max-w-2xl">
+        <div className="flex-1 max-w-2xl pl-10 md:pl-0 md:mx-4">
           <div className="relative">
             <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
               <Search className="h-5 w-5" />
             </span>
             <Input
-              placeholder="Search for events, defects, or signals"
+              placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -117,7 +117,7 @@ export function Header({ onSearch }: { onSearch?: (term: string) => void }) {
         </div>
         
         {/* Right side icons */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4">
           {/* Notifications */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -128,7 +128,7 @@ export function Header({ onSearch }: { onSearch?: (term: string) => void }) {
                 )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80">
+            <DropdownMenuContent align="end" className="w-[95vw] md:w-80">
               <div className="flex justify-between items-center p-2">
                 <h3 className="font-semibold">Notifications</h3>
                 {unreadNotifications.length > 0 && (
