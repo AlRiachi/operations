@@ -160,10 +160,12 @@ export class MemStorage implements IStorage {
     
     // Set default values for required fields if not provided
     const status = insertEvent.status || "new";
+    const assignedToId = insertEvent.assignedToId !== undefined ? insertEvent.assignedToId : null;
     
     const event: Event = {
       ...insertEvent,
       status,
+      assignedToId,
       id,
       createdAt: now,
       updatedAt: now,
@@ -221,11 +223,20 @@ export class MemStorage implements IStorage {
     const id = this.defectIdCounter++;
     const now = new Date();
     
+    // Set default values for required fields if not provided
+    const status = insertDefect.status || "new";
+    const severity = insertDefect.severity || "medium";
+    const assignedToId = insertDefect.assignedToId !== undefined ? insertDefect.assignedToId : null;
+    
     const defect: Defect = {
       ...insertDefect,
+      status,
+      severity,
+      assignedToId,
       id,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
+      photoUrl: insertDefect.photoUrl || null
     };
     
     this.defects.set(id, defect);
@@ -279,8 +290,12 @@ export class MemStorage implements IStorage {
     const id = this.signalIdCounter++;
     const now = new Date();
     
+    // Set default values for required fields if not provided
+    const status = insertSignal.status || "normal";
+    
     const signal: Signal = {
       ...insertSignal,
+      status,
       id,
       createdAt: now
     };
@@ -319,8 +334,16 @@ export class MemStorage implements IStorage {
     const id = this.notificationIdCounter++;
     const now = new Date();
     
+    // Set default values for required fields if not provided
+    const isRead = insertNotification.isRead !== undefined ? insertNotification.isRead : false;
+    const relatedId = insertNotification.relatedId !== undefined ? insertNotification.relatedId : null;
+    const relatedType = insertNotification.relatedType !== undefined ? insertNotification.relatedType : null;
+    
     const notification: Notification = {
       ...insertNotification,
+      isRead,
+      relatedId,
+      relatedType,
       id,
       createdAt: now
     };
