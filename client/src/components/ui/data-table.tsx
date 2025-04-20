@@ -89,9 +89,9 @@ export function DataTable<TData, TValue>({
     <div>
       {/* Search and Export Controls */}
       {(searchable || exportable) && (
-        <div className="flex justify-between items-center py-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center py-4 space-y-4 md:space-y-0">
           {searchable && searchColumn && (
-            <div className="max-w-sm">
+            <div className="w-full md:max-w-sm">
               <Input
                 placeholder={`Search...`}
                 value={(table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""}
@@ -103,27 +103,27 @@ export function DataTable<TData, TValue>({
             </div>
           )}
           
-          {!searchable && <div />}
+          {!searchable && <div className="hidden md:block" />}
           
           {exportable && exportOptions && (
-            <div className="flex space-x-2">
+            <div className="flex w-full md:w-auto justify-between md:justify-start space-x-2">
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={handleExportToPdf}
-                className="flex items-center"
+                className="flex items-center flex-1 md:flex-none justify-center"
               >
                 <FileText className="h-4 w-4 mr-2" />
-                Export PDF
+                <span className="whitespace-nowrap">Export PDF</span>
               </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={handleExportToExcel}
-                className="flex items-center"
+                className="flex items-center flex-1 md:flex-none justify-center"
               >
                 <FileSpreadsheet className="h-4 w-4 mr-2" />
-                Export Excel
+                <span className="whitespace-nowrap">Export Excel</span>
               </Button>
             </div>
           )}
@@ -178,8 +178,8 @@ export function DataTable<TData, TValue>({
       
       {/* Pagination */}
       {pagination && (
-        <div className="flex items-center justify-between py-4">
-          <div className="text-sm text-gray-500">
+        <div className="flex flex-col sm:flex-row items-center justify-between py-4 space-y-3 sm:space-y-0">
+          <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
             Showing{" "}
             <span className="font-medium">
               {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
@@ -200,6 +200,7 @@ export function DataTable<TData, TValue>({
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
+              className="px-3 py-2 h-8"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -208,6 +209,7 @@ export function DataTable<TData, TValue>({
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
+              className="px-3 py-2 h-8"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>

@@ -34,9 +34,9 @@ function EventDetails({ event, onClose }: EventDetailsProps) {
   
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">{event.title}</h2>
+      <h2 className="text-xl md:text-2xl font-bold">{event.title}</h2>
       
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <h3 className="text-sm font-medium text-gray-500">Event ID</h3>
           <p>#{`EV-${event.id}`}</p>
@@ -75,12 +75,12 @@ function EventDetails({ event, onClose }: EventDetailsProps) {
           <p>{formatDate(event.updatedAt)}</p>
         </div>
         
-        <div className="col-span-2">
+        <div className="col-span-1 md:col-span-2">
           <h3 className="text-sm font-medium text-gray-500">Location</h3>
           <p>{event.location}</p>
         </div>
         
-        <div className="col-span-2">
+        <div className="col-span-1 md:col-span-2">
           <h3 className="text-sm font-medium text-gray-500">Description</h3>
           <p className="text-gray-700">{event.description}</p>
         </div>
@@ -92,7 +92,7 @@ function EventDetails({ event, onClose }: EventDetailsProps) {
           <img 
             src={event.photoUrl} 
             alt="Event" 
-            className="max-w-md rounded-md border"
+            className="w-full max-w-md rounded-md border"
           />
         </div>
       )}
@@ -267,7 +267,7 @@ export function EventList() {
               New Event
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogContent className="w-[calc(100%-2rem)] sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogTitle className="text-xl font-semibold">
               {selectedEvent ? "Edit Event" : "Create New Event"}
             </DialogTitle>
@@ -295,7 +295,7 @@ export function EventList() {
       
       {/* View Details Dialog */}
       <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
-        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100%-2rem)] sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
           <DialogTitle className="text-xl font-semibold">Event Details</DialogTitle>
           {selectedEvent && (
             <EventDetails 
@@ -308,15 +308,15 @@ export function EventList() {
       
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="w-[calc(100%-2rem)] sm:max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the selected event.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogFooter className="flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+            <AlertDialogCancel className="mt-2 sm:mt-0">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 if (selectedEvent) {
