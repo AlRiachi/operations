@@ -1,152 +1,144 @@
 # Power Plant Operations Management System
 
-A comprehensive web-based system designed for enterprise-level tracking and management of events, defects, and signals in power plant operations.
+A comprehensive enterprise-level application for tracking and managing power plant operations, events, defects, and signals.
 
 ## Features
 
 - **Event Management**: Track and manage operational events
-- **Defect Tracking**: Record and monitor equipment defects with severity levels
-- **Forced Signal Management**: Override sensor values with manual entries
-- **Role-based Access Control**: Admin and operator roles with different permissions
-- **Real-time Updates**: Live data updates via WebSockets
-- **Data Export**: Export data to PDF and Excel formats
-- **Image Upload**: Attach photos to events and defects
+- **Defect Tracking**: Document and monitor equipment defects
+- **Forced Signal Management**: Handle overridden signals from equipment
+- **User Authentication**: Role-based access control with admin and operator roles
+- **File Upload**: Attach photos to events and defects
+- **Export Capabilities**: Export data to PDF and Excel formats
+- **Real-time Updates**: Live monitoring of critical plant operations
 
 ## Technology Stack
 
-- **Frontend**: React with TypeScript, TailwindCSS
-- **Backend**: Express.js, Node.js
-- **Database**: PostgreSQL with Drizzle ORM
-- **Authentication**: Passport.js with session-based auth
-- **Containerization**: Docker with multi-container setup
+- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend**: Node.js, Express
+- **Database**: PostgreSQL
+- **ORM**: Drizzle ORM
+- **Authentication**: Passport.js
+- **Real-time Updates**: WebSockets
+- **Containerization**: Docker
 
-## Getting Started
+## Development Setup
 
 ### Prerequisites
 
-- Docker and Docker Compose
-- Node.js (for local development)
+- Node.js (v16+)
+- PostgreSQL database
+- Docker (optional)
 
-### Development Setup
+### Local Development
 
-1. Clone the repository:
+1. Clone the repository
+2. Install dependencies:
    ```
-   git clone <repository-url>
-   cd power-plant-app
+   npm install
    ```
-
-2. Set up the environment:
-   
-   **For local PostgreSQL database:**
+3. Set up environment variables (copy `.env.example` to `.env`)
+4. Start the application:
    ```
-   chmod +x scripts/*.sh
-   ./scripts/setup-env.sh --local
+   npm run dev
    ```
 
-   **For cloud PostgreSQL database (e.g., Neon):**
-   ```
-   chmod +x scripts/*.sh
-   ./scripts/setup-env.sh --cloud "postgresql://user:password@host:port/dbname"
-   ```
+### Docker Development Setup
 
+1. Make sure Docker and Docker Compose are installed
+2. Build the Docker images:
+   ```
+   ./build-docker.sh
+   ```
 3. Start the development environment:
-   
-   **With local PostgreSQL:**
    ```
-   ./scripts/start-docker.sh --mode dev --db local
+   ./scripts/start-docker.sh dev
    ```
-   
-   **With cloud PostgreSQL:**
+4. Access the application at `http://localhost:5000`
+
+## Production Deployment
+
+### Docker Production Setup
+
+1. Build the Docker images:
    ```
-   ./scripts/start-docker.sh --mode dev --db cloud
+   ./build-docker.sh
    ```
 
-4. Access the application at:
+2. Start in production mode:
    ```
-   http://localhost:5000
-   ```
-
-### Production Deployment
-
-1. Configure environment variables:
-   ```
-   chmod +x scripts/*.sh
-   ```
-   
-   **For local PostgreSQL database:**
-   ```
-   ./scripts/setup-env.sh --local
+   ./scripts/start-docker.sh prod
    ```
 
-   **For cloud PostgreSQL database (e.g., Neon):**
+3. For cloud-based PostgreSQL (e.g., Neon), set the `DATABASE_URL` environment variable:
    ```
-   ./scripts/setup-env.sh --cloud "postgresql://user:password@host:port/dbname"
-   ```
-
-2. Generate SSL certificates (or provide your own):
-   ```
-   cd scripts
-   ./generate-ssl-cert.sh
+   export DATABASE_URL=postgres://username:password@host:port/database
    ```
 
-3. Start the production environment:
-   
-   **With local PostgreSQL:**
+4. Stop the containers when needed:
    ```
-   ./scripts/start-docker.sh --mode prod --db local
-   ```
-   
-   **With cloud PostgreSQL:**
-   ```
-   ./scripts/start-docker.sh --mode prod --db cloud
+   ./scripts/stop-docker.sh prod
    ```
 
-4. Access the application via HTTPS:
-   ```
-   https://<your-domain>
-   ```
+### Docker Troubleshooting
+
+If you encounter issues with Docker:
+
+1. **Database Connection Errors**:
+   - Check that PostgreSQL is running: `docker ps | grep postgres`
+   - Verify environment variables: `echo $DATABASE_URL`
+   - Check logs: `docker logs operations-postgres-1`
+
+2. **Application Startup Errors**:
+   - Check app logs: `docker logs operations-app-1`
+   - Ensure database is properly initialized: `./scripts/init-db.sh`
+
+3. **Docker Entrypoint Issues**:
+   - If you see errors related to docker-entrypoint.sh, try rebuilding the image with `./build-docker.sh`
+   - If problems persist, use the provided start and stop scripts instead of direct Docker commands
 
 ## Database Management
 
-### Backup Database
+The system supports both local PostgreSQL and cloud database providers like Neon:
 
-```
-docker exec -it powerplant-app_app_1 /bin/bash -c "/app/scripts/backup-db.sh"
-```
+1. **Initialize database**:
+   ```
+   ./scripts/init-db.sh
+   ```
 
-### Restore Database
+2. **Backup database**:
+   ```
+   ./scripts/backup-db.sh
+   ```
 
-```
-docker exec -it powerplant-app_app_1 /bin/bash -c "/app/scripts/restore-db.sh /app/backups/your-backup-file.sql.gz"
-```
+3. **Restore from backup**:
+   ```
+   ./scripts/restore-db.sh <backup-file>
+   ```
 
-## Default Users
+4. **Seed with demo users**:
+   ```
+   node scripts/seed-users.js
+   ```
 
-The system comes with two default users:
+### Default Credentials
 
-1. Admin User:
-   - Username: `admin`
-   - Password: `admin123`
-   - Role: `admin`
+- **Admin User**:
+  - Username: `admin`
+  - Password: `admin`
 
-2. Operator User:
-   - Username: `operator`
-   - Password: `operator123`
-   - Role: `operator`
+- **Operator User**:
+  - Username: `operator`
+  - Password: `operator`
 
-## Database Configuration
+## Docker Configuration
 
-The PostgreSQL database is configured with the following credentials:
+The application can be deployed in different configurations:
 
-- **Username**: `root`
-- **Password**: `Resheh-2019`
-- **Database**: `powerplantapp`
-- **Host**: `postgres` (inside Docker network)
+1. **Local Development**: Uses `docker-compose.yml` with volumes for hot reloading
+2. **Production with Local Database**: Uses `docker-compose.prod.yml` with persistent database volume
+3. **Production with Cloud Database**: Uses environment variables to connect to cloud PostgreSQL
 
-## License
+## Support
 
-[MIT License](LICENSE)
-
-## Contributors
-
-- [Your Name/Team]
+For questions or support, please contact the development team.
