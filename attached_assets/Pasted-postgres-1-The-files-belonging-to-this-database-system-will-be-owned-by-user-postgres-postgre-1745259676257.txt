@@ -1,0 +1,124 @@
+postgres-1  | The files belonging to this database system will be owned by user "postgres".
+postgres-1  | This user must also own the server process.
+postgres-1  |
+postgres-1  | The database cluster will be initialized with locale "en_US.utf8".
+postgres-1  | The default database encoding has accordingly been set to "UTF8".
+postgres-1  | The default text search configuration will be set to "english".
+postgres-1  |
+postgres-1  | Data page checksums are disabled.
+postgres-1  |
+postgres-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres-1  | creating subdirectories ... ok
+postgres-1  | selecting dynamic shared memory implementation ... posix
+postgres-1  | selecting default max_connections ... 100
+postgres-1  | selecting default shared_buffers ... 128MB
+postgres-1  | selecting default time zone ... Etc/UTC
+postgres-1  | creating configuration files ... ok
+postgres-1  | running bootstrap script ... ok
+postgres-1  | performing post-bootstrap initialization ... ok
+postgres-1  | initdb: warning: enabling "trust" authentication for local connections
+postgres-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+postgres-1  | syncing data to disk ... ok
+postgres-1  |
+postgres-1  |
+postgres-1  | Success. You can now start the database server using:
+postgres-1  |
+postgres-1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-1  |
+postgres-1  | waiting for server to start....2025-04-21 18:19:47.602 UTC [49] LOG:  starting PostgreSQL 15.12 (Debian 15.12-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+postgres-1  | 2025-04-21 18:19:47.615 UTC [49] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2025-04-21 18:19:47.669 UTC [58] LOG:  database system was shut down at 2025-04-21 18:19:43 UTC
+postgres-1  | 2025-04-21 18:19:47.689 UTC [49] LOG:  database system is ready to accept connections
+postgres-1  |  done
+postgres-1  | server started
+postgres-1  | 2025-04-21 18:19:47.790 UTC [64] FATAL:  role "postgres" does not exist
+postgres-1  | CREATE DATABASE
+postgres-1  |
+postgres-1  |
+postgres-1  | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+postgres-1  |
+postgres-1  | 2025-04-21 18:19:48.151 UTC [49] LOG:  received fast shutdown request
+postgres-1  | waiting for server to shut down....2025-04-21 18:19:48.168 UTC [49] LOG:  aborting any active transactions
+postgres-1  | 2025-04-21 18:19:48.171 UTC [49] LOG:  background worker "logical replication launcher" (PID 61) exited with exit code 1
+postgres-1  | 2025-04-21 18:19:48.172 UTC [56] LOG:  shutting down
+postgres-1  | 2025-04-21 18:19:48.188 UTC [56] LOG:  checkpoint starting: shutdown immediate
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 0
+postgres-1  | ...2025-04-21 18:19:51.394 UTC [56] LOG:  checkpoint complete: wrote 918 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.108 s, sync=3.013 s, total=3.222 s; sync files=301, longest=0.228 s, average=0.011 s; distance=4222 kB, estimate=4222 kB
+postgres-1  | 2025-04-21 18:19:51.414 UTC [49] LOG:  database system is shut down
+postgres-1  |  done
+postgres-1  | server stopped
+postgres-1  |
+postgres-1  | PostgreSQL init process complete; ready for start up.
+postgres-1  |
+postgres-1  | 2025-04-21 18:19:51.528 UTC [1] LOG:  starting PostgreSQL 15.12 (Debian 15.12-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+postgres-1  | 2025-04-21 18:19:51.533 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1  | 2025-04-21 18:19:51.533 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1  | 2025-04-21 18:19:51.564 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2025-04-21 18:19:51.590 UTC [72] LOG:  database system was shut down at 2025-04-21 18:19:51 UTC
+postgres-1  | 2025-04-21 18:19:51.611 UTC [1] LOG:  database system is ready to accept connections
+postgres-1  | 2025-04-21 18:19:52.881 UTC [83] FATAL:  role "postgres" does not exist
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+postgres-1  | 2025-04-21 18:19:57.961 UTC [91] FATAL:  role "postgres" does not exist
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+postgres-1  | 2025-04-21 18:20:03.107 UTC [100] FATAL:  role "postgres" does not exist
+postgres-1  | 2025-04-21 18:20:10.088 UTC [109] FATAL:  role "postgres" does not exist
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+postgres-1  | 2025-04-21 18:20:15.181 UTC [117] FATAL:  role "postgres" does not exist
+postgres-1  | 2025-04-21 18:20:20.338 UTC [125] FATAL:  role "postgres" does not exist
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+postgres-1  | 2025-04-21 18:20:25.472 UTC [134] FATAL:  role "postgres" does not exist
+postgres-1  | 2025-04-21 18:20:30.556 UTC [142] FATAL:  role "postgres" does not exist
+postgres-1  | 2025-04-21 18:20:35.634 UTC [150] FATAL:  role "postgres" does not exist
+postgres-1  | 2025-04-21 18:20:42.549 UTC [158] FATAL:  role "postgres" does not exist
