@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # PostgreSQL database service
+  # PostgreSQL database service (only used if not using a cloud database)
   postgres:
     image: postgres:15
     restart: always
@@ -13,8 +13,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - powerplant_network
+    profiles:
+      - local-db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-root}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,12 +30,17 @@ services:
     ports:
       - "${PORT:-5000}:5000"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - ${DB_DEPENDENCY:-postgres}
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgres://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-Resheh-2019}@postgres:5432/${POSTGRES_DB:-powerplantapp}
-      - SESSION_SECRET=${SESSION_SECRET}
+      - PORT=${PORT:-5000}
+      - PGHOST=${PGHOST:-postgres}
+      - PGPORT=${PGPORT:-5432}
+      - PGUSER=${PGUSER:-root}
+      - PGPASSWORD=${PGPASSWORD:-Resheh-2019}
+      - PGDATABASE=${PGDATABASE:-powerplantapp}
+      - DATABASE_URL=${DATABASE_URL:-postgres://root:Resheh-2019@postgres:5432/powerplantapp}
+      - SESSION_SECRET=${SESSION_SECRET:-production_secret_key}
     volumes:
       - app_uploads:/app/uploads
       - app_backups:/app/backups

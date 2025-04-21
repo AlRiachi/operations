@@ -35,21 +35,52 @@ A comprehensive web-based system designed for enterprise-level tracking and mana
    cd power-plant-app
    ```
 
-2. Start the development environment:
+2. Set up the environment:
+   
+   **For local PostgreSQL database:**
    ```
-   docker-compose up
+   chmod +x scripts/*.sh
+   ./scripts/setup-env.sh --local
    ```
 
-3. Access the application at:
+   **For cloud PostgreSQL database (e.g., Neon):**
+   ```
+   chmod +x scripts/*.sh
+   ./scripts/setup-env.sh --cloud "postgresql://user:password@host:port/dbname"
+   ```
+
+3. Start the development environment:
+   
+   **With local PostgreSQL:**
+   ```
+   ./scripts/start-docker.sh --mode dev --db local
+   ```
+   
+   **With cloud PostgreSQL:**
+   ```
+   ./scripts/start-docker.sh --mode dev --db cloud
+   ```
+
+4. Access the application at:
    ```
    http://localhost:5000
    ```
 
 ### Production Deployment
 
-1. Configure environment variables by copying `.env.example` to `.env` and updating values:
+1. Configure environment variables:
    ```
-   cp .env.example .env
+   chmod +x scripts/*.sh
+   ```
+   
+   **For local PostgreSQL database:**
+   ```
+   ./scripts/setup-env.sh --local
+   ```
+
+   **For cloud PostgreSQL database (e.g., Neon):**
+   ```
+   ./scripts/setup-env.sh --cloud "postgresql://user:password@host:port/dbname"
    ```
 
 2. Generate SSL certificates (or provide your own):
@@ -59,8 +90,15 @@ A comprehensive web-based system designed for enterprise-level tracking and mana
    ```
 
 3. Start the production environment:
+   
+   **With local PostgreSQL:**
    ```
-   docker-compose -f docker-compose.prod.yml up -d
+   ./scripts/start-docker.sh --mode prod --db local
+   ```
+   
+   **With cloud PostgreSQL:**
+   ```
+   ./scripts/start-docker.sh --mode prod --db cloud
    ```
 
 4. Access the application via HTTPS:
