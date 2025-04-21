@@ -789,7 +789,7 @@ export class DatabaseStorage implements IStorage {
           name: insertSignal.name,
           value: insertSignal.value,
           unit: insertSignal.unit,
-          status,
+          status: status as any,
           source: insertSignal.source,
           createdAt: now
         })
