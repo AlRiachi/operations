@@ -1,158 +1,114 @@
 # Power Plant Operations Management System
 
-A web-based enterprise-level system for tracking events, defects, and signals in power plant operations.
+A comprehensive web-based system designed for enterprise-level tracking and management of events, defects, and signals in power plant operations.
 
-## Docker Deployment Guide
+## Features
+
+- **Event Management**: Track and manage operational events
+- **Defect Tracking**: Record and monitor equipment defects with severity levels
+- **Forced Signal Management**: Override sensor values with manual entries
+- **Role-based Access Control**: Admin and operator roles with different permissions
+- **Real-time Updates**: Live data updates via WebSockets
+- **Data Export**: Export data to PDF and Excel formats
+- **Image Upload**: Attach photos to events and defects
+
+## Technology Stack
+
+- **Frontend**: React with TypeScript, TailwindCSS
+- **Backend**: Express.js, Node.js
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: Passport.js with session-based auth
+- **Containerization**: Docker with multi-container setup
+
+## Getting Started
 
 ### Prerequisites
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+- Docker and Docker Compose
+- Node.js (for local development)
 
-### Development Deployment
+### Development Setup
 
 1. Clone the repository:
    ```
    git clone <repository-url>
-   cd power-plant-ops
+   cd power-plant-app
    ```
 
-2. Start the application:
+2. Start the development environment:
    ```
-   docker-compose up -d
+   docker-compose up
    ```
 
-3. Access the application at http://localhost:5000
+3. Access the application at:
+   ```
+   http://localhost:5000
+   ```
 
 ### Production Deployment
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd power-plant-ops
-   ```
-
-2. Create a `.env` file from the example:
+1. Configure environment variables by copying `.env.example` to `.env` and updating values:
    ```
    cp .env.example .env
    ```
 
-3. Edit the `.env` file and set secure passwords and secrets:
+2. Generate SSL certificates (or provide your own):
    ```
-   # For example, generate a secure session secret:
-   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-   ```
-
-4. Generate SSL certificates (for testing, or add your own certificates):
-   ```
-   # For self-signed certificates (development/testing only)
-   chmod +x scripts/generate-ssl-cert.sh
-   ./scripts/generate-ssl-cert.sh
-   
-   # For production, replace the certificates in nginx/certs/ with trusted ones
+   cd scripts
+   ./generate-ssl-cert.sh
    ```
 
-5. Start the application using the production configuration:
+3. Start the production environment:
    ```
    docker-compose -f docker-compose.prod.yml up -d
    ```
 
-6. Access the application:
-   - HTTP: http://your-server-ip:80 (redirects to HTTPS)
-   - HTTPS: https://your-server-ip:443
+4. Access the application via HTTPS:
+   ```
+   https://<your-domain>
+   ```
 
-### Managing the Database
+## Database Management
 
-#### Backing up the database
+### Backup Database
 
-The system automatically creates daily backups in the `/app/backups` directory inside the container, which is mapped to the `app_backups` volume.
-
-To manually back up the database:
-
-```bash
-# Using the built-in script (recommended)
-docker-compose exec app ./scripts/backup-db.sh
-
-# Or with a direct command
-docker-compose exec postgres pg_dump -U postgres powerplantapp > backup.sql
+```
+docker exec -it powerplant-app_app_1 /bin/bash -c "/app/scripts/backup-db.sh"
 ```
 
-#### Restoring the database
+### Restore Database
 
-```bash
-# Using the built-in script
-docker-compose exec app ./scripts/restore-db.sh /app/backups/powerplantapp_YYYYMMDD_HHMMSS.sql.gz
-
-# Or with a direct command
-cat backup.sql | docker-compose exec -T postgres psql -U postgres powerplantapp
 ```
-
-### Maintenance Operations
-
-#### Viewing logs
-
-```bash
-# Application logs
-docker-compose logs -f app
-
-# Database logs
-docker-compose logs -f postgres
-
-# Web server logs
-docker-compose logs -f nginx
-```
-
-#### Restarting services
-
-```bash
-# Restart the entire stack
-docker-compose restart
-
-# Restart individual services
-docker-compose restart app
-docker-compose restart postgres
-docker-compose restart nginx
-```
-
-#### Updating the application
-
-```bash
-# Pull the latest code
-git pull
-
-# Rebuild and restart containers
-docker-compose down
-docker-compose up -d --build
+docker exec -it powerplant-app_app_1 /bin/bash -c "/app/scripts/restore-db.sh /app/backups/your-backup-file.sql.gz"
 ```
 
 ## Default Users
 
-- Admin: 
-  - Username: admin
-  - Password: admin123
-- Operator: 
-  - Username: operator
-  - Password: operator123
+The system comes with two default users:
 
-*Note: Change these passwords in production!*
+1. Admin User:
+   - Username: `admin`
+   - Password: `admin123`
+   - Role: `admin`
 
-## Key Features
+2. Operator User:
+   - Username: `operator`
+   - Password: `operator123`
+   - Role: `operator`
 
-- Event tracking and management
-- Defect reporting and resolution tracking
-- Forced signal monitoring and control
-- Role-based access control
-- Real-time data updates via WebSockets
-- Export capabilities to PDF and Excel
-- Mobile-responsive design
-- Docker and PostgreSQL deployment for easier installation
-- Daily database backups
-- SSL support with NGINX
+## Database Configuration
 
-## Architecture
+The PostgreSQL database is configured with the following credentials:
 
-- Frontend: React, TypeScript, TailwindCSS, Shadcn UI
-- Backend: Node.js, Express, Drizzle ORM
-- Database: PostgreSQL
-- Communication: WebSockets for real-time updates
-- Deployment: Docker, Docker Compose, NGINX
+- **Username**: `root`
+- **Password**: `Resheh-2019`
+- **Database**: `powerplantapp`
+- **Host**: `postgres` (inside Docker network)
+
+## License
+
+[MIT License](LICENSE)
+
+## Contributors
+
+- [Your Name/Team]
