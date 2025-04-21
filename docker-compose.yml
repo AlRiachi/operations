@@ -45,7 +45,7 @@ services:
       - /app/node_modules
       - app_uploads:/app/uploads
       - app_backups:/app/backups
-    command: npm run dev
+    command: ["npm", "run", "dev"]
 
 volumes:
   postgres_data:

@@ -34,10 +34,11 @@ COPY --from=build /app/client/dist ./client/dist
 # Copy necessary scripts and configuration
 COPY scripts/ ./scripts/
 COPY wait-for-postgres.sh ./
+COPY docker-entrypoint.sh ./
 COPY .env.example ./.env
 
 # Ensure scripts are executable
-RUN chmod +x ./wait-for-postgres.sh ./scripts/*.sh
+RUN chmod +x ./wait-for-postgres.sh ./scripts/*.sh ./docker-entrypoint.sh
 
 # Create directories for uploads and backups
 RUN mkdir -p ./uploads ./backups
@@ -49,6 +50,9 @@ USER appuser
 
 # Expose application port
 EXPOSE 5000
+
+# Set the entrypoint
+ENTRYPOINT ["./docker-entrypoint.sh"]
 
 # Command to run the application
 CMD ["node", "dist/server/index.js"]
