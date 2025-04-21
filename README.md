@@ -1,151 +1,120 @@
 # Power Plant Operations Management System
 
-A comprehensive enterprise-level application for tracking and managing power plant operations, events, defects, and signals.
+A comprehensive enterprise-level platform for tracking and managing power plant operations, events, defects, and signals.
 
-## Features
+## Key Features
 
-- **Event Management**: Track and manage operational events
-- **Defect Tracking**: Document and monitor equipment defects
-- **Forced Signal Management**: Handle overridden signals from equipment
-- **User Authentication**: Role-based access control with admin and operator roles
-- **File Upload**: Attach photos to events and defects
-- **Export Capabilities**: Export data to PDF and Excel formats
-- **Real-time Updates**: Live monitoring of critical plant operations
+- **Real-time Dashboard**: Monitor plant operations with real-time status indicators
+- **Event Management**: Track and manage operational events with detailed tracking
+- **Defect Tracking**: Record and track defects with severity levels and assignment
+- **Forced Signal Management**: Log and monitor forced signals that override normal operations
+- **Role-based Access**: Different permissions for operators and administrators
+- **Photo Upload**: Attach images to events and defects
+- **Export Functionality**: Export data to PDF and Excel formats
 
 ## Technology Stack
 
-- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: Node.js, Express
-- **Database**: PostgreSQL
-- **ORM**: Drizzle ORM
-- **Authentication**: Passport.js
-- **Real-time Updates**: WebSockets
-- **Containerization**: Docker
+- **Frontend**: React with TypeScript, Tailwind CSS, shadcn UI components
+- **Backend**: Node.js with Express
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: Session-based authentication with Passport
+- **Deployment**: Docker for containerization
 
-## Development Setup
+## Running the Application
 
 ### Prerequisites
 
-- Node.js (v16+)
-- PostgreSQL database
-- Docker (optional)
+- Docker and Docker Compose installed
+- Git
 
-### Local Development
+### Development Environment
 
-1. Clone the repository
-2. Install dependencies:
+1. Clone the repository:
    ```
-   npm install
-   ```
-3. Set up environment variables (copy `.env.example` to `.env`)
-4. Start the application:
-   ```
-   npm run dev
+   git clone <repository-url>
+   cd powerplant-app
    ```
 
-### Docker Development Setup
-
-1. Make sure Docker and Docker Compose are installed
-2. Start the development environment with a single command:
+2. Build and start the Docker containers:
    ```
-   ./scripts/start-docker.sh dev
-   ```
-   This will:
-   - Build the Docker images using Dockerfile.dev
-   - Start the containers with docker-compose
-   - Build the application inside the container
-   - Run the application with Node.js
-
-3. Access the application at `http://localhost:5000`
-
-4. To stop the application:
-   ```
-   ./scripts/stop-docker.sh dev
-   ```
-
-## Production Deployment
-
-### Docker Production Setup
-
-1. Build the Docker images:
-   ```
+   # Make scripts executable
+   chmod +x build-docker.sh scripts/*.sh wait-for-postgres.sh docker-entrypoint.sh
+   
+   # Build Docker images
    ./build-docker.sh
+   
+   # Start the application in development mode
+   ./scripts/start-docker.sh
    ```
 
-2. Start in production mode:
+3. Access the application:
+   - Web interface: http://localhost:5000
+   - Default users:
+     - Admin: username `admin`, password `password`
+     - Operator: username `operator`, password `password`
+
+### Production Environment
+
+1. Build and start the production Docker containers:
    ```
+   # Build production Docker images
+   ./build-docker.sh prod
+   
+   # Start the application in production mode
    ./scripts/start-docker.sh prod
    ```
 
-3. For cloud-based PostgreSQL (e.g., Neon), set the `DATABASE_URL` environment variable:
+2. To stop the containers:
    ```
-   export DATABASE_URL=postgres://username:password@host:port/database
-   ```
-
-4. Stop the containers when needed:
-   ```
+   # Stop development containers
+   ./scripts/stop-docker.sh
+   
+   # Or stop production containers
    ./scripts/stop-docker.sh prod
    ```
 
-### Docker Troubleshooting
+## Environment Variables
 
-If you encounter issues with Docker:
+The following environment variables can be configured in the `.env` file:
 
-1. **Database Connection Errors**:
-   - Check that PostgreSQL is running: `docker ps | grep postgres`
-   - Verify environment variables: `echo $DATABASE_URL`
-   - Check logs: `docker logs operations-postgres-1`
-
-2. **Application Startup Errors**:
-   - Check app logs: `docker logs operations-app-1`
-   - Ensure database is properly initialized: `./scripts/init-db.sh`
-
-3. **Docker Entrypoint Issues**:
-   - If you see errors related to docker-entrypoint.sh, try rebuilding the image with `./build-docker.sh`
-   - If problems persist, use the provided start and stop scripts instead of direct Docker commands
+- `DATABASE_URL`: PostgreSQL connection URL
+- `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`: PostgreSQL connection details
+- `SESSION_SECRET`: Secret for session cookies
+- `NODE_ENV`: Environment (`development` or `production`)
+- `PORT`: Port for the application (default: 5000)
 
 ## Database Management
 
-The system supports both local PostgreSQL and cloud database providers like Neon:
+- **Database Migration**: Run `npm run db:push` to update the database schema
+- **Database Backup**: Run `./scripts/backup-db.sh` to backup the database
+- **Database Restore**: Run `./scripts/restore-db.sh <backup-file>` to restore from a backup
 
-1. **Initialize database**:
-   ```
-   ./scripts/init-db.sh
-   ```
+## Development Notes
 
-2. **Backup database**:
-   ```
-   ./scripts/backup-db.sh
-   ```
+- The application has two Dockerfiles:
+  - `Dockerfile.dev` for development with hot reloading
+  - `Dockerfile` for production with optimized builds
+  
+- Local development can also be done outside Docker:
+  ```
+  npm install
+  npm run dev
+  ```
 
-3. **Restore from backup**:
-   ```
-   ./scripts/restore-db.sh <backup-file>
-   ```
+- When using a cloud database like Neon, update the `DATABASE_URL` in your `.env` file with the appropriate connection string
 
-4. **Seed with demo users**:
-   ```
-   node scripts/seed-users.js
-   ```
+## Deployment Options
 
-### Default Credentials
+1. **Local Docker Deployment**:
+   - Suitable for internal networks
+   - Uses local PostgreSQL container
+   - See instructions above
 
-- **Admin User**:
-  - Username: `admin`
-  - Password: `admin`
+2. **Cloud Database with Local Application**:
+   - Use a cloud database provider like Neon
+   - Set up environment variables to point to the cloud database
+   - Deploy application container only
 
-- **Operator User**:
-  - Username: `operator`
-  - Password: `operator`
-
-## Docker Configuration
-
-The application can be deployed in different configurations:
-
-1. **Local Development**: Uses `docker-compose.yml` with volumes for hot reloading
-2. **Production with Local Database**: Uses `docker-compose.prod.yml` with persistent database volume
-3. **Production with Cloud Database**: Uses environment variables to connect to cloud PostgreSQL
-
-## Support
-
-For questions or support, please contact the development team.
+3. **Full Cloud Deployment**:
+   - Deploy Docker images to a cloud provider
+   - Use a managed PostgreSQL service or deploy a PostgreSQL container

@@ -1,24 +1,29 @@
 #!/bin/bash
-# Script to start the Docker containers
+# Script to start Docker containers
 
 set -e
 
-# Default to development mode
-MODE=${1:-dev}
-
-echo "Starting Power Plant Operations Management System in $MODE mode..."
-
-echo "Building Docker images..."
-./build-docker.sh
-
-if [ "$MODE" == "prod" ] || [ "$MODE" == "production" ]; then
-  echo "Running in PRODUCTION mode..."
+# Determine environment
+if [ "$1" == "prod" ] || [ "$1" == "production" ]; then
+  echo "Starting application in production mode..."
   docker-compose -f docker-compose.prod.yml up -d
-elif [ "$MODE" == "dev" ] || [ "$MODE" == "development" ]; then
-  echo "Running in DEVELOPMENT mode..."
-  docker-compose up
 else
-  echo "Invalid mode: $MODE"
-  echo "Usage: ./scripts/start-docker.sh [dev|prod]"
+  echo "Starting application in development mode..."
+  docker-compose up
+fi
+
+# Check if containers started successfully
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "Application started successfully!"
+  echo "Access the web application at: http://localhost:5000"
+  
+  if [ "$1" == "prod" ] || [ "$1" == "production" ]; then
+    echo ""
+    echo "To view logs:"
+    echo "$ docker-compose -f docker-compose.prod.yml logs -f"
+  fi
+else
+  echo "Failed to start containers. Please check the error messages above."
   exit 1
 fi
