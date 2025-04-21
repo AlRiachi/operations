@@ -777,19 +777,37 @@ export class DatabaseStorage implements IStorage {
     // Set default values for required fields if not provided
     const status = insertSignal.status || "normal";
     
-    const [signal] = await db
-      .insert(signals)
-      .values({
-        name: insertSignal.name,
-        value: insertSignal.value,
-        unit: insertSignal.unit,
-        status: status,
-        source: insertSignal.source,
-        createdAt: now // Using the field name that matches our schema mapping
-      })
-      .returning();
+    // Log the exact SQL query being generated for debugging purposes
+    console.log("Signal insert details:", {
+      name: insertSignal.name,
+      value: insertSignal.value,
+      unit: insertSignal.unit,
+      status,
+      source: insertSignal.source,
+      created_at: now
+    });
     
-    return signal;
+    // Explicitly map to database column names
+    // The column name is 'created_at', not 'createdAt'
+    try {
+      const [signal] = await db
+        .insert(signals)
+        .values({
+          name: insertSignal.name,
+          value: insertSignal.value,
+          unit: insertSignal.unit,
+          status,
+          source: insertSignal.source,
+          // This is the column name in the database
+          created_at: now
+        })
+        .returning();
+      
+      return signal;
+    } catch (error) {
+      console.error("Error inserting signal:", error);
+      throw error;
+    }
   }
 
   async getSignal(id: number): Promise<Signal | undefined> {

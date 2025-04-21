@@ -454,6 +454,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
       
+      console.log("Signal submission payload:", req.body);
+      
       // Extract only the fields that actually exist in the database
       const { name, value, unit, status, source } = req.body;
       
@@ -461,16 +463,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Missing required fields" });
       }
       
+      console.log("Attempting to create signal with:", { name, value, unit, status, source });
+      
       // Create the signal with only the fields the database supports
-      const signal = await storage.createSignal({
-        name, value, unit, status, source
-      });
-      
-      // Broadcast the new signal to all connected clients
-      broadcastUpdate('signal_created', signal);
-      
-      res.status(201).json(signal);
+      try {
+        const signal = await storage.createSignal({
+          name, value, unit, status, source
+        });
+        
+        // Broadcast the new signal to all connected clients
+        broadcastUpdate('signal_created', signal);
+        
+        res.status(201).json(signal);
+      } catch (dbError) {
+        console.error("Database error creating signal:", dbError);
+        return res.status(500).json({ 
+          message: "Database error creating signal", 
+          error: dbError instanceof Error ? dbError.message : String(dbError) 
+        });
+      }
     } catch (error) {
+      console.error("Error in signal creation:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ 
           message: "Validation error", 
