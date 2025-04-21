@@ -12,7 +12,7 @@ DB_NAME=${PGDATABASE:-powerplantapp}
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
-until PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER -c '\q'; do
+until PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d postgres -c '\q'; do
   echo "PostgreSQL is unavailable - sleeping"
   sleep 1
 done
