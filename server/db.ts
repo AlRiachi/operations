@@ -11,5 +11,6 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
+// Modified to use the environment variable directly, assuming it's correctly set to use 'root' user.
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle(pool, { schema });
