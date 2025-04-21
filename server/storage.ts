@@ -342,18 +342,14 @@ export class MemStorage implements IStorage {
     // Set default values for required fields if not provided
     const status = insertSignal.status || "normal";
     
-    // Create a minimal signal compatible with what's in the database
+    // Create a signal object with only the fields that exist in the database schema
     const signal: Signal = {
       id,
       name: insertSignal.name,
       value: insertSignal.value,
       unit: insertSignal.unit,
       source: insertSignal.source,
-      status: status as any,
-      description: null,
-      category: "normal",
-      severity: "low",
-      createdById: null,
+      status: status as "normal" | "warning" | "critical" | "active" | "inactive",
       createdAt: now
     };
     
@@ -379,11 +375,7 @@ export class MemStorage implements IStorage {
       value: signalUpdate.value !== undefined ? signalUpdate.value : signal.value,
       unit: signalUpdate.unit !== undefined ? signalUpdate.unit : signal.unit,
       source: signalUpdate.source !== undefined ? signalUpdate.source : signal.source,
-      status: signalUpdate.status !== undefined ? signalUpdate.status as any : signal.status,
-      description: signal.description,
-      category: signal.category,
-      severity: signal.severity,
-      createdById: signal.createdById,
+      status: signalUpdate.status !== undefined ? signalUpdate.status as "normal" | "warning" | "critical" | "active" | "inactive" : signal.status,
       createdAt: signal.createdAt
     };
     
