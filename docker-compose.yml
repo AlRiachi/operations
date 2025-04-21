@@ -23,7 +23,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     restart: always
     ports:
       - "${PORT:-5000}:5000"
@@ -45,7 +45,7 @@ services:
       - /app/node_modules
       - app_uploads:/app/uploads
       - app_backups:/app/backups
-    command: ["npm", "run", "dev"]
+    # Note: The command is defined in Dockerfile.dev
 
 volumes:
   postgres_data:

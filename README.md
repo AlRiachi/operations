@@ -46,15 +46,22 @@ A comprehensive enterprise-level application for tracking and managing power pla
 ### Docker Development Setup
 
 1. Make sure Docker and Docker Compose are installed
-2. Build the Docker images:
-   ```
-   ./build-docker.sh
-   ```
-3. Start the development environment:
+2. Start the development environment with a single command:
    ```
    ./scripts/start-docker.sh dev
    ```
-4. Access the application at `http://localhost:5000`
+   This will:
+   - Build the Docker images using Dockerfile.dev
+   - Start the containers with docker-compose
+   - Build the application inside the container
+   - Run the application with Node.js
+
+3. Access the application at `http://localhost:5000`
+
+4. To stop the application:
+   ```
+   ./scripts/stop-docker.sh dev
+   ```
 
 ## Production Deployment
 

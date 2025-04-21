@@ -1,0 +1,28 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Install PostgreSQL client for database scripts
+RUN apk add --no-cache postgresql-client bash
+
+# Copy necessary scripts and configuration
+COPY scripts/ ./scripts/
+COPY wait-for-postgres.sh ./
+COPY drizzle.config.ts ./
+COPY .env.example ./.env
+
+# Ensure scripts are executable
+RUN chmod +x ./wait-for-postgres.sh ./scripts/*.sh
+
+# Create directories for uploads and backups
+RUN mkdir -p ./uploads ./backups
+
+# Expose application port
+EXPOSE 5000
+
+# Build and start command
+CMD npm run build && node dist/index.js

@@ -8,6 +8,9 @@ MODE=${1:-dev}
 
 echo "Starting Power Plant Operations Management System in $MODE mode..."
 
+echo "Building Docker images..."
+./build-docker.sh
+
 if [ "$MODE" == "prod" ] || [ "$MODE" == "production" ]; then
   echo "Running in PRODUCTION mode..."
   docker-compose -f docker-compose.prod.yml up -d
