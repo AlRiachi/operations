@@ -785,7 +785,7 @@ export class DatabaseStorage implements IStorage {
         unit: insertSignal.unit,
         status: status,
         source: insertSignal.source,
-        created_at: now
+        createdAt: now // Using the field name that matches our schema mapping
       })
       .returning();
     

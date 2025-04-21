@@ -93,15 +93,17 @@ export const signals = pgTable("signals", {
     enum: ["normal", "warning", "critical", "active", "inactive"] 
   }).default("normal").notNull(),
   source: text("source").notNull(),
-  category: text("category", {
-    enum: ["normal", "forced"]
-  }).default("normal").notNull(),
-  severity: text("severity", {
-    enum: ["low", "medium", "high", "critical"]
-  }).default("low").notNull(),
-  description: text("description"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  createdById: integer("created_by_id").references(() => users.id),
+  // Note: These fields exist in our schema but not in the actual database
+  // We're commenting them out rather than removing entirely for reference
+  // category: text("category", {
+  //   enum: ["normal", "forced"]
+  // }).default("normal").notNull(),
+  // severity: text("severity", {
+  //   enum: ["low", "medium", "high", "critical"]
+  // }).default("low").notNull(),
+  // description: text("description"),
+  // createdById: integer("created_by_id").references(() => users.id),
 });
 
 export const insertSignalSchema = createInsertSchema(signals).omit({
@@ -137,7 +139,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   eventsAssigned: many(events, { relationName: "userEventsAssigned" }),
   defectsCreated: many(defects, { relationName: "userDefectsCreated" }),
   defectsAssigned: many(defects, { relationName: "userDefectsAssigned" }),
-  signalsCreated: many(signals, { relationName: "userSignalsCreated" }),
+  // Removing relation since createdById doesn't exist in signals table
+  // signalsCreated: many(signals, { relationName: "userSignalsCreated" }),
   notifications: many(notifications),
 }));
 
@@ -167,12 +170,14 @@ export const defectsRelations = relations(defects, ({ one }) => ({
   }),
 }));
 
-export const signalsRelations = relations(signals, ({ one }) => ({
-  createdBy: one(users, {
-    fields: [signals.createdById],
-    references: [users.id],
-    relationName: "userSignalsCreated"
-  }),
+// Since createdById doesn't exist in the database, we need to update the relations
+export const signalsRelations = relations(signals, ({ }) => ({
+  // Commenting out this relation since createdById doesn't exist in the database
+  // createdBy: one(users, {
+  //   fields: [signals.createdById],
+  //   references: [users.id],
+  //   relationName: "userSignalsCreated"
+  // }),
 }));
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({
