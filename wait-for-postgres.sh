@@ -3,14 +3,15 @@
 
 set -e
 
-host="postgres"
-user="postgres"
-password="postgres"
-db="powerplantapp"
+# Get the database credentials from environment variables
+DB_HOST=${PGHOST:-postgres}
+DB_PORT=${PGPORT:-5432}
+DB_USER=${PGUSER:-postgres}
+DB_PASSWORD=${PGPASSWORD:-postgres}
 
-until PGPASSWORD=$password psql -h "$host" -U "$user" -d "$db" -c '\q'; do
+until PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER -c '\q'; do
   >&2 echo "Postgres is unavailable - sleeping"
   sleep 1
 done
 
->&2 echo "Postgres is up - executing command"
+>&2 echo "Postgres is up - continuing"

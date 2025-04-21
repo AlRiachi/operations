@@ -782,6 +782,7 @@ export class DatabaseStorage implements IStorage {
     // Explicitly map to database column names
     // The column name is 'created_at', not 'createdAt'
     try {
+      // Using the proper column names as defined in the schema
       const [signal] = await db
         .insert(signals)
         .values({
@@ -790,8 +791,7 @@ export class DatabaseStorage implements IStorage {
           unit: insertSignal.unit,
           status,
           source: insertSignal.source,
-          // This is the column name in the database
-          created_at: now
+          createdAt: now
         })
         .returning();
       
