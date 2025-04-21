@@ -819,9 +819,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateSignal(id: number, signalUpdate: Partial<{ name: string; value: string; unit: string; status: string; source: string }>): Promise<Signal | undefined> {
+    // Ensure status is one of the allowed enum values if it's provided
+    const update: any = { ...signalUpdate };
+    if (update.status && !["normal", "warning", "critical", "active", "inactive"].includes(update.status)) {
+      update.status = "normal"; // Default to normal if invalid status
+    }
+    
     const [signal] = await db
       .update(signals)
-      .set(signalUpdate)
+      .set(update)
       .where(eq(signals.id, id))
       .returning();
     
