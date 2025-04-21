@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-powerplantapp}
+    ports:
+      - "127.0.0.1:5432:5432"  # Only expose to localhost
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+  # Web Application
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-powerplantapp}
+      - SESSION_SECRET=${SESSION_SECRET:-makethissecurerandomstring}
+    ports:
+      - "5000:5000"  # Consider binding to 127.0.0.1 for added security in production
+    restart: always
+    networks:
+      - backend
+      - frontend
+    volumes:
+      - uploads:/app/uploads
+
+networks:
+  backend:
+    internal: true  # Only for internal communication
+  frontend:
+    # For external access to the web app
+
+volumes:
+  postgres_data:
+  uploads:
