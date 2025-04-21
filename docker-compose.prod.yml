@@ -1,4 +1,4 @@
-version: '3.8'
+# Docker Compose file for production
 
 services:
   # PostgreSQL database service (only used if not using a cloud database)
@@ -46,7 +46,7 @@ services:
       - app_backups:/app/backups
     networks:
       - powerplant_network
-    command: npm start
+    command: ["npm", "start"]
 
   # NGINX service for SSL termination and static file serving
   nginx:
