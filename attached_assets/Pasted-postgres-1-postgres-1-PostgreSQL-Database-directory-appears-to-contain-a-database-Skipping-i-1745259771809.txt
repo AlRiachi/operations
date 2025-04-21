@@ -1,0 +1,99 @@
+postgres-1  |
+postgres-1  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+postgres-1  |
+postgres-1  | 2025-04-21 18:22:30.940 UTC [1] LOG:  starting PostgreSQL 15.12 (Debian 15.12-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+postgres-1  | 2025-04-21 18:22:30.940 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1  | 2025-04-21 18:22:30.940 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1  | 2025-04-21 18:22:30.951 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2025-04-21 18:22:30.964 UTC [29] LOG:  database system was shut down at 2025-04-21 18:22:19 UTC
+postgres-1  | 2025-04-21 18:22:30.973 UTC [1] LOG:  database system is ready to accept connections
+postgres-1  | 2025-04-21 18:22:35.954 UTC [40] FATAL:  role "postgres" does not exist
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 0
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+postgres-1  | 2025-04-21 18:22:41.063 UTC [49] FATAL:  role "postgres" does not exist
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1 exited with code 255
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+postgres-1  | 2025-04-21 18:22:46.136 UTC [57] FATAL:  role "postgres" does not exist
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
+app-1       | exec ./docker-entrypoint.sh: no such file or directory
