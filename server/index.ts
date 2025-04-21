@@ -73,8 +73,12 @@ app.use((req, res, next) => {
       log("Initializing database with demo users...");
       await storage.initializeDemoUsers();
       log("Database initialization complete!");
-    } catch (error) {
-      log(`Error initializing database: ${error}`);
+    } catch (err: unknown) {
+      const error = err as Error;
+      log(`Error initializing database: ${error.message || 'Unknown error'}`);
+      if (error.stack) {
+        log(`Stack trace: ${error.stack}`);
+      }
     }
   });
 })();

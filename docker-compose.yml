@@ -43,6 +43,9 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
+      - ./client:/app/client
+      - ./server:/app/server
+      - ./shared:/app/shared
       - app_uploads:/app/uploads
       - app_backups:/app/backups
     # Note: The command is defined in Dockerfile.dev
