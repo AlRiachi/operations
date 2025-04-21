@@ -54,5 +54,8 @@ USER appuser
 # Expose application port
 EXPOSE 5000
 
+# Use our entrypoint script
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
 # Command to run the application
 CMD ["node", "dist/index.js"]

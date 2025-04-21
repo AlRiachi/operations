@@ -40,6 +40,11 @@ services:
       - PGDATABASE=${PGDATABASE:-powerplantapp}
       - DATABASE_URL=${DATABASE_URL:-postgres://root:Resheh-2019@postgres:5432/powerplantapp}
       - SESSION_SECRET=${SESSION_SECRET:-local_development_secret_change_this_in_production}
+      # Vite configuration for Docker development
+      - VITE_HOST=0.0.0.0
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - VITE_WATCH_POLL=true
     volumes:
       - ./:/app
       - /app/node_modules
