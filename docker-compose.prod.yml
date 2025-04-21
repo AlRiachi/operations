@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database service
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Resheh-2019}
+      POSTGRES_DB: ${POSTGRES_DB:-powerplantapp}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - powerplant_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js application service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${PORT:-5000}:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-Resheh-2019}@postgres:5432/${POSTGRES_DB:-powerplantapp}
+      - SESSION_SECRET=${SESSION_SECRET}
+    volumes:
+      - app_uploads:/app/uploads
+      - app_backups:/app/backups
+    networks:
+      - powerplant_network
+    command: npm start
+
+  # NGINX service for SSL termination and static file serving
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/www:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - powerplant_network
+
+volumes:
+  postgres_data:
+  app_uploads:
+  app_backups:
+
+networks:
+  powerplant_network:
+    driver: bridge
