@@ -12,6 +12,9 @@ COPY . .
 # Build the application
 RUN npm run build
 
+# Verify the build output
+RUN ls -la dist/
+
 # Production image
 FROM node:20-alpine as production
 
@@ -29,7 +32,7 @@ RUN apk add --no-cache postgresql-client bash
 
 # Copy built application from build stage
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/client/dist ./client/dist
+# Note: client dist folder is included in the main dist folder in this setup
 
 # Copy necessary scripts and configuration
 COPY scripts/ ./scripts/
@@ -52,4 +55,4 @@ USER appuser
 EXPOSE 5000
 
 # Command to run the application
-CMD ["node", "dist/server/index.js"]
+CMD ["node", "dist/index.js"]

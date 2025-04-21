@@ -59,7 +59,13 @@ fi
 echo "Checking if we need to seed users..."
 if ! PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "SELECT * FROM users LIMIT 1" > /dev/null 2>&1; then
   echo "No users found, seeding demo users..."
-  node ./scripts/seed-users.js
+  if [ -f "/app/scripts/seed-users.js" ]; then
+    # Running inside Docker container
+    cd /app && node ./scripts/seed-users.js
+  else
+    # Running locally
+    node ./scripts/seed-users.js
+  fi
 else
   echo "Users already exist, skipping seed"
 fi
