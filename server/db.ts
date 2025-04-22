@@ -1,9 +1,6 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import { Pool } from 'pg'; // Import Pool from 'pg'
+import { drizzle } from 'drizzle-orm/node-postgres'; // Use the correct drizzle adapter
 import * as schema from "@shared/schema";
-
-neonConfig.webSocketConstructor = ws;
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -11,7 +8,8 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Modified to use the environment variable directly
 console.log("Connecting to database with URL:", process.env.DATABASE_URL.replace(/:.+@/, ':****@'));
+// Use Pool from 'pg'
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+// Use the node-postgres drizzle adapter
 export const db = drizzle(pool, { schema });
