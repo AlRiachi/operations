@@ -55,6 +55,13 @@ export interface IStorage {
   markNotificationAsRead(id: number): Promise<boolean>;
   markAllNotificationsAsRead(userId: number): Promise<boolean>;
   
+  // Search operations
+  search(query: string): Promise<{
+    events: Event[];
+    defects: Defect[];
+    signals: Signal[];
+  }>;
+  
   // Session store
   sessionStore: any; // Using any for session store due to type issue
 }
@@ -467,6 +474,51 @@ export class MemStorage implements IStorage {
     }
     
     return true;
+  }
+  
+  // Search functionality
+  async search(query: string): Promise<{
+    events: Event[];
+    defects: Defect[];
+    signals: Signal[];
+  }> {
+    const lowercaseQuery = query.toLowerCase();
+    
+    // Search events
+    const events = Array.from(this.events.values())
+      .filter(event => 
+        (event.title?.toLowerCase().includes(lowercaseQuery) ||
+         event.description?.toLowerCase().includes(lowercaseQuery) ||
+         event.category?.toLowerCase().includes(lowercaseQuery) ||
+         event.location?.toLowerCase().includes(lowercaseQuery)) &&
+        event.status !== "closed" // Filter out soft-deleted events
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    // Search defects
+    const defects = Array.from(this.defects.values())
+      .filter(defect => 
+        (defect.title?.toLowerCase().includes(lowercaseQuery) ||
+         defect.description?.toLowerCase().includes(lowercaseQuery) ||
+         defect.category?.toLowerCase().includes(lowercaseQuery) ||
+         defect.location?.toLowerCase().includes(lowercaseQuery) ||
+         defect.maintenanceFeedback?.toLowerCase().includes(lowercaseQuery) ||
+         defect.workType?.toLowerCase().includes(lowercaseQuery)) &&
+        defect.status !== "closed" // Filter out soft-deleted defects
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    // Search signals
+    const signals = Array.from(this.signals.values())
+      .filter(signal => 
+        (signal.name?.toLowerCase().includes(lowercaseQuery) ||
+         signal.value?.toLowerCase().includes(lowercaseQuery) ||
+         signal.source?.toLowerCase().includes(lowercaseQuery)) &&
+        signal.status !== "inactive" // Filter out soft-deleted signals
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    return { events, defects, signals };
   }
 }
 
@@ -925,6 +977,76 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return result.length > 0;
+  }
+  
+  // Search functionality
+  async search(query: string): Promise<{
+    events: Event[];
+    defects: Defect[];
+    signals: Signal[];
+  }> {
+    const lowercaseQuery = `%${query.toLowerCase()}%`;
+    
+    // Import ilike for case-insensitive search
+    const { ilike } = drizzle;
+    
+    // Search events - use ilike for case-insensitive search
+    const eventResults = await db
+      .select()
+      .from(events)
+      .where(
+        and(
+          or(
+            ilike(events.title, lowercaseQuery),
+            ilike(events.description, lowercaseQuery),
+            ilike(events.category, lowercaseQuery),
+            ilike(events.location, lowercaseQuery)
+          ),
+          not(eq(events.status, "closed")) // Filter out soft-deleted events
+        )
+      )
+      .orderBy(desc(events.createdAt));
+    
+    // Search defects - use ilike for case-insensitive search
+    const defectResults = await db
+      .select()
+      .from(defects)
+      .where(
+        and(
+          or(
+            ilike(defects.title, lowercaseQuery),
+            ilike(defects.description, lowercaseQuery),
+            ilike(defects.category, lowercaseQuery),
+            ilike(defects.location, lowercaseQuery),
+            ilike(defects.maintenanceFeedback, lowercaseQuery),
+            ilike(defects.workType, lowercaseQuery)
+          ),
+          not(eq(defects.status, "closed")) // Filter out soft-deleted defects
+        )
+      )
+      .orderBy(desc(defects.createdAt));
+    
+    // Search signals - use ilike for case-insensitive search
+    const signalResults = await db
+      .select()
+      .from(signals)
+      .where(
+        and(
+          or(
+            ilike(signals.name, lowercaseQuery),
+            ilike(signals.value, lowercaseQuery),
+            ilike(signals.source, lowercaseQuery)
+          ),
+          not(eq(signals.status, "inactive")) // Filter out soft-deleted signals
+        )
+      )
+      .orderBy(desc(signals.createdAt));
+    
+    return {
+      events: eventResults,
+      defects: defectResults,
+      signals: signalResults
+    };
   }
 }
 
