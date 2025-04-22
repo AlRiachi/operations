@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database service
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: Resheh-2019
+      POSTGRES_DB: powerplantapp
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d powerplantapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Node.js application service for development
+  app:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    restart: "no"
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGUSER=root
+      - PGPASSWORD=Resheh-2019
+      - PGDATABASE=powerplantapp
+      - DATABASE_URL=postgres://root:Resheh-2019@postgres:5432/powerplantapp
+      - SESSION_SECRET=local_development_secret_change_this_in_production
+      # Vite configuration for Docker development
+      - VITE_HOST=0.0.0.0
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - WATCH_POLL=true
+      - VITE_WATCH_POLL=true
+      - FORCE_COLOR=1
+    volumes:
+      - ./client:/app/client
+      - ./server:/app/server
+      - ./shared:/app/shared
+      - ./scripts:/app/scripts
+      - ./attached_assets:/app/attached_assets
+      - ./docker-entrypoint-dev.sh:/app/docker-entrypoint.sh
+      - app_uploads:/app/uploads
+      - app_backups:/app/backups
+    command: ["bash", "/app/docker-entrypoint.sh"]
+
+volumes:
+  postgres_data:
+  app_uploads:
+  app_backups:
