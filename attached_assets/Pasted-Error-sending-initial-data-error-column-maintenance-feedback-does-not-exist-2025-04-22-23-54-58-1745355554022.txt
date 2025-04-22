@@ -1,0 +1,49 @@
+Error sending initial data: error: column "maintenance_feedback" does not exist
+2025-04-22 23:54:58     at /app/node_modules/pg-pool/index.js:45:11
+2025-04-22 23:54:58     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-04-22 23:54:58     at async <anonymous> (/app/node_modules/src/node-postgres/session.ts:104:19)
+2025-04-22 23:54:58     at async sendInitialData (/app/server/routes.ts:44:25) {
+2025-04-22 23:54:58   length: 120,
+2025-04-22 23:54:58   severity: 'ERROR',
+2025-04-22 23:54:58   code: '42703',
+2025-04-22 23:54:58   detail: undefined,
+2025-04-22 23:54:58   hint: undefined,
+2025-04-22 23:54:58   position: '84',
+2025-04-22 23:54:58   internalPosition: undefined,
+2025-04-22 23:54:58   internalQuery: undefined,
+2025-04-22 23:54:58   where: undefined,
+2025-04-22 23:54:58   schema: undefined,
+2025-04-22 23:54:58   table: undefined,
+2025-04-22 23:54:58   column: undefined,
+2025-04-22 23:54:58   dataType: undefined,
+2025-04-22 23:54:58   constraint: undefined,
+2025-04-22 23:54:58   file: 'parse_relation.c',
+2025-04-22 23:54:58   line: '3665',
+2025-04-22 23:54:58   routine: 'errorMissingColumn'
+2025-04-22 23:54:58 }
+2025-04-22 23:54:58 8:54:58 PM [express] GET /api/user 200 in 37ms :: {"id":1,"username":"admin","firstName":"Admin","la…
+2025-04-22 23:54:59 8:54:59 PM [express] GET /api/events 304 in 18ms :: [{"id":2,"title":"DM water tanks C/O","descripti…
+2025-04-22 23:54:59 8:54:59 PM [express] GET /api/notifications 200 in 21ms :: []
+2025-04-22 23:54:59 error: column "maintenance_feedback" does not exist
+2025-04-22 23:54:59     at /app/node_modules/pg-pool/index.js:45:11
+2025-04-22 23:54:59     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-04-22 23:54:59     at async <anonymous> (/app/node_modules/src/node-postgres/session.ts:104:19)
+2025-04-22 23:54:59     at async <anonymous> (/app/server/routes.ts:267:19)
+2025-04-22 23:55:32 error: column "maintenance_feedback" does not exist
+2025-04-22 23:55:32     at /app/node_modules/pg-pool/index.js:45:11
+2025-04-22 23:55:32     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-04-22 23:55:32     at async <anonymous> (/app/node_modules/src/node-postgres/session.ts:104:19)
+2025-04-22 23:55:32     at async <anonymous> (/app/server/routes.ts:267:19)
+2025-04-22 23:55:34 8:55:34 PM [express] GET /api/users 200 in 9ms :: [{"id":1,"username":"admin","firstName":"Admin","l…
+2025-04-22 23:55:42 error: column "maintenance_feedback" of relation "defects" does not exist
+2025-04-22 23:55:42     at /app/node_modules/pg-pool/index.js:45:11
+2025-04-22 23:55:42     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-04-22 23:55:42     at async <anonymous> (/app/node_modules/src/node-postgres/session.ts:104:19)
+2025-04-22 23:55:42     at async DatabaseStorage.createDefect (/app/server/storage.ts:724:22)
+2025-04-22 23:55:42     at async <anonymous> (/app/server/routes.ts:304:22)
+2025-04-22 23:55:47 error: column "maintenance_feedback" does not exist
+2025-04-22 23:55:47     at /app/node_modules/pg-pool/index.js:45:11
+2025-04-22 23:55:47     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-04-22 23:55:47     at async <anonymous> (/app/node_modules/src/node-postgres/session.ts:104:19)
+2025-04-22 23:55:47     at async <anonymous> (/app/server/routes.ts:267:19)
+2025-04-22 23:55:50 WebSocket client disconnected
