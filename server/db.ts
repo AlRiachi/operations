@@ -11,7 +11,7 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Modified to use the environment variable directly with the root user and Resheh-2019 password
+// Modified to use the environment variable directly
 console.log("Connecting to database with URL:", process.env.DATABASE_URL.replace(/:.+@/, ':****@'));
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle(pool, { schema });
