@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./storage";
+import { runMigrations } from "./db/migrations";
 
 const app = express();
 app.use(express.json());
@@ -68,14 +69,20 @@ app.use((req, res, next) => {
   }, async () => {
     log(`serving on port ${port}`);
     
-    // Initialize database with demo users
+    // Run database migrations and initialize demo users
     try {
+      // Run database migrations first
+      log("Running database migrations...");
+      await runMigrations();
+      log("Database migrations complete!");
+      
+      // Then initialize demo users
       log("Initializing database with demo users...");
       await storage.initializeDemoUsers();
       log("Database initialization complete!");
     } catch (err: unknown) {
       const error = err as Error;
-      log(`Error initializing database: ${error.message || 'Unknown error'}`);
+      log(`Error in database initialization: ${error.message || 'Unknown error'}`);
       if (error.stack) {
         log(`Stack trace: ${error.stack}`);
       }

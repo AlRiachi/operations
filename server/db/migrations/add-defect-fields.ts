@@ -16,7 +16,9 @@ export async function addDefectFields() {
       WHERE table_name = 'defects' AND column_name = 'maintenance_feedback'
     `);
 
-    if (checkMaintenanceFeedback.length === 0) {
+    // Check if the column exists (result will be an empty array if it doesn't)
+    const maintenanceFeedbackExists = (checkMaintenanceFeedback.rows || []).length > 0;
+    if (!maintenanceFeedbackExists) {
       // Add maintenance_feedback column
       await db.execute(sql`
         ALTER TABLE defects
@@ -33,7 +35,9 @@ export async function addDefectFields() {
       WHERE table_name = 'defects' AND column_name = 'work_type'
     `);
 
-    if (checkWorkType.length === 0) {
+    // Check if the column exists (result will be an empty array if it doesn't)
+    const workTypeExists = (checkWorkType.rows || []).length > 0;
+    if (!workTypeExists) {
       // Create enum type for work_type if it doesn't exist
       await db.execute(sql`
         DO $$
