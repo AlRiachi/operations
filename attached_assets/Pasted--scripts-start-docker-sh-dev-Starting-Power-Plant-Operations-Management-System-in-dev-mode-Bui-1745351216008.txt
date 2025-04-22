@@ -1,0 +1,228 @@
+./scripts/start-docker.sh dev
+Starting Power Plant Operations Management System in dev mode...
+Building Docker images...
+Building Docker images...
+Compose now can delegate build to bake for better performances
+Just set COMPOSE_BAKE=true
+[+] Building 9.6s (17/17) FINISHED                                                                       docker:default
+ => [app internal] load build definition from Dockerfile.dev                                                       0.1s
+ => => transferring dockerfile: 647B                                                                               0.0s
+ => [app internal] load metadata for docker.io/library/node:20-alpine                                              1.0s
+ => [app internal] load .dockerignore                                                                              0.1s
+ => => transferring context: 896B                                                                                  0.0s
+ => [app  1/11] FROM docker.io/library/node:20-alpine@sha256:8bda036ddd59ea51a23bc1a1035d3b5c614e72c01366d989f412  0.0s
+ => [app internal] load build context                                                                              0.1s
+ => => transferring context: 1.20kB                                                                                0.0s
+ => CACHED [app  2/11] WORKDIR /app                                                                                0.0s
+ => CACHED [app  3/11] COPY package*.json ./                                                                       0.0s
+ => CACHED [app  4/11] RUN npm ci                                                                                  0.0s
+ => CACHED [app  5/11] RUN apk add --no-cache postgresql-client bash                                               0.0s
+ => [app  6/11] COPY scripts/ ./scripts/                                                                           0.3s
+ => [app  7/11] COPY wait-for-postgres.sh ./                                                                       0.5s
+ => [app  8/11] COPY drizzle.config.ts ./                                                                          0.5s
+ => [app  9/11] COPY .env.example ./.env                                                                           0.5s
+ => [app 10/11] RUN chmod +x ./wait-for-postgres.sh ./scripts/*.sh                                                 1.2s
+ => [app 11/11] RUN mkdir -p ./uploads ./backups                                                                   2.9s
+ => [app] exporting to image                                                                                       1.5s
+ => => exporting layers                                                                                            1.3s
+ => => writing image sha256:0d260bd6ee92f4ae3b72efbb1f63a50c1f4b45c4f8add2e4a771d346f41a6a45                       0.0s
+ => => naming to docker.io/library/operations-app                                                                  0.1s
+ => [app] resolving provenance for metadata file                                                                   0.0s
+[+] Building 1/1
+ ✔ app  Built                                                                                                      0.0s
+Docker images built successfully. You can now run your containers with:
+docker-compose up
+
+For production mode, use:
+docker-compose -f docker-compose.prod.yml up -d
+
+Database credentials:
+ - Username: root
+ - Password: Resheh-2019
+ - Database: powerplantapp
+Running in DEVELOPMENT mode...
+[+] Running 3/3
+ ✔ Network operations_default       Created                                                                        0.2s
+ ✔ Container operations-postgres-1  Created                                                                        0.4s
+ ✔ Container operations-app-1       Created                                                                       11.6s
+Attaching to app-1, postgres-1
+postgres-1  |
+postgres-1  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+postgres-1  |
+postgres-1  | 2025-04-21 19:41:08.592 UTC [1] LOG:  starting PostgreSQL 15.12 (Debian 15.12-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+postgres-1  | 2025-04-21 19:41:08.592 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1  | 2025-04-21 19:41:08.592 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1  | 2025-04-21 19:41:08.604 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2025-04-21 19:41:08.620 UTC [29] LOG:  database system was shut down at 2025-04-21 19:37:30 UTC
+postgres-1  | 2025-04-21 19:41:08.648 UTC [1] LOG:  database system is ready to accept connections
+app-1       |
+app-1       | > rest-express@1.0.0 build
+app-1       | > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+app-1       |
+app-1       | vite v5.4.14 building for production...
+app-1       | transforming...
+app-1       | Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+app-1       |   npx update-browserslist-db@latest
+app-1       |   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+app-1       | ✓ 3346 modules transformed.
+app-1       | rendering chunks...
+app-1       | computing gzip size...
+app-1       | ../dist/public/index.html                              1.85 kB │ gzip:   0.75 kB
+app-1       | ../dist/public/assets/index-Dt1OKjuZ.css              68.57 kB │ gzip:  11.96 kB
+app-1       | ../dist/public/assets/purify.es-CF4_YkFU.js           21.86 kB │ gzip:   8.62 kB
+app-1       | ../dist/public/assets/index.es-DL5oASf8.js           149.98 kB │ gzip:  51.25 kB
+app-1       | ../dist/public/assets/html2canvas.esm-CBrSDip1.js    201.42 kB │ gzip:  48.03 kB
+app-1       | ../dist/public/assets/index-BNjpDB7c.js            2,798.34 kB │ gzip: 787.31 kB
+app-1       |
+app-1       | (!) Some chunks are larger than 500 kB after minification. Consider:
+app-1       | - Using dynamic import() to code-split the application
+app-1       | - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+app-1       | - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+app-1       | ✓ built in 25.93s
+app-1       |
+app-1       |   dist/index.js  41.4kb
+app-1       |
+app-1       | ⚡ Done in 7ms
+app-1       | Connecting to database with URL: postgres:****@postgres:5432/powerplantapp
+app-1       | 7:41:42 PM [express] serving on port 5000
+app-1       | 7:41:42 PM [express] Initializing database with demo users...
+app-1       | 7:41:42 PM [express] Error initializing database: [object Object]
+app-1       | 7:42:14 PM [vite] Pre-transform error: Failed to load url /src/main.tsx?v=3PtVs63arbSF9sZFbCN9j (resolved id: /src/main.tsx?v=3PtVs63arbSF9sZFbCN9j). Does the file exist?
+app-1 exited with code 0
+app-1       |
+app-1       | > rest-express@1.0.0 build
+app-1       | > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+app-1       |
+app-1       | vite v5.4.14 building for production...
+app-1       | transforming...
+app-1       | Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+app-1       |   npx update-browserslist-db@latest
+app-1       |   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+app-1       | ✓ 3346 modules transformed.
+app-1       | rendering chunks...
+app-1       | computing gzip size...
+app-1       | ../dist/public/index.html                              1.85 kB │ gzip:   0.75 kB
+app-1       | ../dist/public/assets/index-Dt1OKjuZ.css              68.57 kB │ gzip:  11.96 kB
+app-1       | ../dist/public/assets/purify.es-CF4_YkFU.js           21.86 kB │ gzip:   8.62 kB
+app-1       | ../dist/public/assets/index.es-DL5oASf8.js           149.98 kB │ gzip:  51.25 kB
+app-1       | ../dist/public/assets/html2canvas.esm-CBrSDip1.js    201.42 kB │ gzip:  48.03 kB
+app-1       | ../dist/public/assets/index-BNjpDB7c.js            2,798.34 kB │ gzip: 787.31 kB
+app-1       |
+app-1       | (!) Some chunks are larger than 500 kB after minification. Consider:
+app-1       | - Using dynamic import() to code-split the application
+app-1       | - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+app-1       | - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+app-1       | ✓ built in 23.32s
+app-1       |
+app-1       |   dist/index.js  41.4kb
+app-1       |
+app-1       | ⚡ Done in 7ms
+app-1       | Connecting to database with URL: postgres:****@postgres:5432/powerplantapp
+app-1       | 7:42:41 PM [express] serving on port 5000
+app-1       | 7:42:41 PM [express] Initializing database with demo users...
+app-1       | 7:42:41 PM [express] Error initializing database: [object Object]
+app-1       | 7:42:42 PM [vite] Pre-transform error: Failed to load url /src/main.tsx?v=9G9GyaLd6hB9rxJcmCe7m (resolved id: /src/main.tsx?v=9G9GyaLd6hB9rxJcmCe7m). Does the file exist?
+app-1 exited with code 0
+app-1       |
+app-1       | > rest-express@1.0.0 build
+app-1       | > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+app-1       |
+app-1       | vite v5.4.14 building for production...
+app-1       | transforming...
+app-1       | Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+app-1       |   npx update-browserslist-db@latest
+app-1       |   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+app-1       | ✓ 3346 modules transformed.
+app-1       | rendering chunks...
+app-1       | computing gzip size...
+app-1       | ../dist/public/index.html                              1.85 kB │ gzip:   0.75 kB
+app-1       | ../dist/public/assets/index-Dt1OKjuZ.css              68.57 kB │ gzip:  11.96 kB
+app-1       | ../dist/public/assets/purify.es-CF4_YkFU.js           21.86 kB │ gzip:   8.62 kB
+app-1       | ../dist/public/assets/index.es-DL5oASf8.js           149.98 kB │ gzip:  51.25 kB
+app-1       | ../dist/public/assets/html2canvas.esm-CBrSDip1.js    201.42 kB │ gzip:  48.03 kB
+app-1       | ../dist/public/assets/index-BNjpDB7c.js            2,798.34 kB │ gzip: 787.31 kB
+app-1       |
+app-1       | (!) Some chunks are larger than 500 kB after minification. Consider:
+app-1       | - Using dynamic import() to code-split the application
+app-1       | - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+app-1       | - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+app-1       | ✓ built in 24.72s
+app-1       |
+app-1       |   dist/index.js  41.4kb
+app-1       |
+app-1       | ⚡ Done in 7ms
+app-1       | Connecting to database with URL: postgres:****@postgres:5432/powerplantapp
+app-1       | 7:43:10 PM [express] serving on port 5000
+app-1       | 7:43:10 PM [express] Initializing database with demo users...
+app-1       | 7:43:10 PM [express] Error initializing database: [object Object]
+app-1       | 7:43:34 PM [vite] Pre-transform error: Failed to load url /src/main.tsx?v=8y5fB67Ob1--_ItULJDJH (resolved id: /src/main.tsx?v=8y5fB67Ob1--_ItULJDJH). Does the file exist?
+app-1 exited with code 0
+app-1       |
+app-1       | > rest-express@1.0.0 build
+app-1       | > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+app-1       |
+app-1       | vite v5.4.14 building for production...
+app-1       | transforming...
+app-1       | Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+app-1       |   npx update-browserslist-db@latest
+app-1       |   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+app-1       | ✓ 3346 modules transformed.
+app-1       | rendering chunks...
+app-1       | computing gzip size...
+app-1       | ../dist/public/index.html                              1.85 kB │ gzip:   0.75 kB
+app-1       | ../dist/public/assets/index-Dt1OKjuZ.css              68.57 kB │ gzip:  11.96 kB
+app-1       | ../dist/public/assets/purify.es-CF4_YkFU.js           21.86 kB │ gzip:   8.62 kB
+app-1       | ../dist/public/assets/index.es-DL5oASf8.js           149.98 kB │ gzip:  51.25 kB
+app-1       | ../dist/public/assets/html2canvas.esm-CBrSDip1.js    201.42 kB │ gzip:  48.03 kB
+app-1       | ../dist/public/assets/index-BNjpDB7c.js            2,798.34 kB │ gzip: 787.31 kB
+app-1       |
+app-1       | (!) Some chunks are larger than 500 kB after minification. Consider:
+app-1       | - Using dynamic import() to code-split the application
+app-1       | - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+app-1       | - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+app-1       | ✓ built in 22.51s
+app-1       |
+app-1       |   dist/index.js  41.4kb
+app-1       |
+app-1       | ⚡ Done in 7ms
+app-1       | Connecting to database with URL: postgres:****@postgres:5432/powerplantapp
+app-1       | 7:44:00 PM [express] serving on port 5000
+app-1       | 7:44:00 PM [express] Initializing database with demo users...
+app-1       | 7:44:00 PM [express] Error initializing database: [object Object]
+postgres-1  | 2025-04-21 19:46:27.458 UTC [27] LOG:  checkpoint starting: time
+postgres-1  | 2025-04-21 19:46:27.505 UTC [27] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.006 s, total=0.048 s; sync files=2, longest=0.003 s, average=0.003 s; distance=0 kB, estimate=0 kB
+app-1       | 8:32:12 PM [vite] Pre-transform error: Failed to load url /src/main.tsx?v=ktxLH9iCOt5cLnb4nUKW8 (resolved id: /src/main.tsx?v=ktxLH9iCOt5cLnb4nUKW8). Does the file exist?
+app-1 exited with code 0
+app-1       |
+app-1       | > rest-express@1.0.0 build
+app-1       | > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+app-1       |
+app-1       | vite v5.4.14 building for production...
+app-1       | transforming...
+app-1       | Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+app-1       |   npx update-browserslist-db@latest
+app-1       |   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+app-1       | ✓ 3346 modules transformed.
+app-1       | rendering chunks...
+app-1       | computing gzip size...
+app-1       | ../dist/public/index.html                              1.85 kB │ gzip:   0.75 kB
+app-1       | ../dist/public/assets/index-Dt1OKjuZ.css              68.57 kB │ gzip:  11.96 kB
+app-1       | ../dist/public/assets/purify.es-CF4_YkFU.js           21.86 kB │ gzip:   8.62 kB
+app-1       | ../dist/public/assets/index.es-DL5oASf8.js           149.98 kB │ gzip:  51.25 kB
+app-1       | ../dist/public/assets/html2canvas.esm-CBrSDip1.js    201.42 kB │ gzip:  48.03 kB
+app-1       | ../dist/public/assets/index-BNjpDB7c.js            2,798.34 kB │ gzip: 787.31 kB
+app-1       |
+app-1       | (!) Some chunks are larger than 500 kB after minification. Consider:
+app-1       | - Using dynamic import() to code-split the application
+app-1       | - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+app-1       | - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+app-1       | ✓ built in 23.38s
+app-1       |
+app-1       |   dist/index.js  41.4kb
+app-1       |
+app-1       | ⚡ Done in 6ms
+app-1       | Connecting to database with URL: postgres:****@postgres:5432/powerplantapp
+app-1       | 8:32:39 PM [express] serving on port 5000
+app-1       | 8:32:39 PM [express] Initializing database with demo users...
+app-1       | 8:32:39 PM [express] Error initializing database: [object Object]
+
