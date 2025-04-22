@@ -10,7 +10,7 @@ import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { hashPassword } from "./auth";
 import { db, pool } from "./db";
-import { eq, desc, and, or, not } from "drizzle-orm";
+import { eq, desc, and, or, not, ilike } from "drizzle-orm";
 
 // Create memory store for sessions
 const MemoryStore = createMemoryStore(session);
@@ -268,7 +268,9 @@ export class MemStorage implements IStorage {
       id,
       createdAt: now,
       updatedAt: now,
-      photoUrl: insertDefect.photoUrl || null
+      photoUrl: insertDefect.photoUrl || null,
+      maintenanceFeedback: insertDefect.maintenanceFeedback || null,
+      workType: insertDefect.workType || null
     };
     
     this.defects.set(id, defect);
@@ -987,8 +989,7 @@ export class DatabaseStorage implements IStorage {
   }> {
     const lowercaseQuery = `%${query.toLowerCase()}%`;
     
-    // Import ilike for case-insensitive search
-    const { ilike } = drizzle;
+    // ilike is already imported at the top of the file
     
     // Search events - use ilike for case-insensitive search
     const eventResults = await db

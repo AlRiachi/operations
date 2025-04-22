@@ -570,6 +570,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Search endpoint
+  app.get("/api/search", async (req, res, next) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const query = req.query.q as string;
+      
+      if (!query) {
+        return res.status(400).json({ message: "Missing search query parameter 'q'" });
+      }
+      
+      const results = await storage.search(query);
+      
+      res.json(results);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
   // Notifications
   app.get("/api/notifications", async (req, res, next) => {
     try {
