@@ -259,18 +259,28 @@ export class MemStorage implements IStorage {
     const status = insertDefect.status || "new";
     const severity = insertDefect.severity || "medium";
     const assignedToId = insertDefect.assignedToId !== undefined ? insertDefect.assignedToId : null;
+    const photoUrl = insertDefect.photoUrl || null;
     
+    // Explicitly handle the new fields
+    const maintenanceFeedback = insertDefect.maintenanceFeedback || null;
+    const workType = insertDefect.workType || null;
+    
+    // Create defect object that matches the database schema
     const defect: Defect = {
-      ...insertDefect,
-      status,
-      severity,
-      assignedToId,
       id,
+      title: insertDefect.title,
+      description: insertDefect.description,
+      location: insertDefect.location,
+      category: insertDefect.category,
+      severity,
+      status,
+      assignedToId,
+      createdById: insertDefect.createdById,
       createdAt: now,
       updatedAt: now,
-      photoUrl: insertDefect.photoUrl || null,
-      maintenanceFeedback: insertDefect.maintenanceFeedback || null,
-      workType: insertDefect.workType || null
+      photoUrl,
+      maintenanceFeedback,
+      workType
     };
     
     this.defects.set(id, defect);
