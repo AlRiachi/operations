@@ -70,6 +70,12 @@ export const defects = pgTable("defects", {
   status: text("status", { 
     enum: ["new", "assigned", "in_progress", "resolved", "closed"] 
   }).default("new").notNull(),
+  // New field for maintenance feedback
+  maintenanceFeedback: text("maintenance_feedback"),
+  // New field for work type classification
+  workType: text("work_type", { 
+    enum: ["shutdown_work", "running_maintenance", "emergency_repair", "preventive_maintenance", "inspection", "other"] 
+  }),
   assignedToId: integer("assigned_to_id").references(() => users.id),
   createdById: integer("created_by_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
